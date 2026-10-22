@@ -1,0 +1,366 @@
+/* ================== TIPOGRAFÍA ================== */
+
+.ibm-plex-sans-<uniquifier> {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+body {
+  background-color: #f4f4f4 !important;
+  color: #4c4c4c;
+}
+
+h1, h2, h3 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700;
+  color: #1f63bb;
+}
+
+h4, h5, h6 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 700;
+}
+
+p {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 400;
+}
+
+ul, li {
+  list-style-type: none;
+}
+
+
+/* ================== COLORES ================== */
+
+.bg-azul-degradado {
+	background: #1A49A3;
+	background: -webkit-linear-gradient(185deg, rgba(26, 73, 163, 1) 28%, rgba(80, 123, 199, 1) 100%);
+	background: -moz-linear-gradient(185deg, rgba(26, 73, 163, 1) 28%, rgba(80, 123, 199, 1) 100%);
+	background: linear-gradient(185deg, rgba(26, 73, 163, 1) 28%, rgba(80, 123, 199, 1) 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#1A49A3", endColorstr="#507BC7", GradientType=0);
+}
+
+.bg-azul,
+.bg-primary {
+  background-color: #1f63bb!important;
+}
+
+.text-primary {
+  color: #1f63bb!important;
+}
+
+.bg-info {
+  background-color: #4abcbc !important;
+}
+
+.bg-bluelight,
+.bg-light-blue {
+  background-color: #d1dbff;
+}
+
+.bg-light-blue {
+  color: #2c76c6!important;
+}
+
+.bg-secondary {
+  background-color: #919191 !important;
+}
+
+.bg-success {
+	background-color: #27AD81!important;
+}
+
+.text-success {
+	color: #27AD81!important;
+}
+
+.bg-danger {
+	background-color: #E54455!important;
+}
+/* ================== BOTONES LIGHT ================== */
+
+.btn-light-blue {
+  background-color: #e7efff;
+  color: #1a49a3;
+  border: 1px solid #d0ddff;
+}
+
+.btn-light-blue:hover {
+  background-color: #d6e4ff;
+  color: #123a85;
+}
+
+/* Morado */
+.btn-light-purple {
+  background-color: #f1e9ff;
+  color: #6b3fa0;
+  border: 1px solid #e0d0ff;
+}
+
+.btn-light-purple:hover {
+  background-color: #e4d6ff;
+  color: #532f82;
+}
+
+/* Amarillo */
+.btn-light-yellow {
+  background-color: #F4E9CB;
+  color: #F1AC1A;
+  border: 1px solid #F4E9CB;
+}
+
+.btn-light-yellow:hover {
+  background-color: #F1AC1A;
+  color: #F4E9CB;
+}
+
+/* Rojo */
+.btn-light-red {
+  background-color: #ffeaea;
+  color: #c62828;
+  border: 1px solid #ffcaca;
+}
+
+.btn-light-red:hover {
+  background-color: #ffd6d6;
+  color: #a61b1b;
+}
+
+/* Rojo */
+.btn-light-success {
+  background-color: #D6E8D6;
+  color: #2EA84F;
+  border: 1px solid #D6E8D6;
+}
+
+.btn-light-success:hover {
+  background-color: #2EA84F;
+  color: #a61b1b;
+}
+
+/* Gris */
+.btn-light-gray {
+  background-color: #f2f2f2;
+  color: #555;
+  border: 1px solid #ddd;
+}
+
+.btn-light-gray:hover {
+  background-color: #e4e4e4;
+  color: #333;
+}
+
+/* Turquesa */
+.btn-light-info {
+  background-color: #e6fbfb;
+  color: #1b8f8f;
+  border: 1px solid #c8f1f1;
+}
+
+.btn-light-info:hover {
+  background-color: #d2f5f5;
+  color: #147777;
+}
+
+
+/* ================== BADGES LIGHT ================== */
+
+.badge-light-blue {
+  background-color: #e7efff;
+  color: #1a49a3;
+}
+
+.badge-light-purple {
+  background-color: #f1e9ff;
+  color: #6b3fa0;
+}
+
+.badge-light-yellow {
+  background-color: #fff8e1;
+  color: #F1AC1A;
+}
+
+.badge-light-red {
+  background-color: #ffeaea;
+  color: #c62828;
+}
+
+.badge-light-gray {
+  background-color: #f2f2f2;
+  color: #555;
+}
+
+.badge-light-turquoise {
+  background-color: #e6fbfb;
+  color: #1b8f8f;
+}
+
+
+/* ================== BOTONES ================== */
+
+
+.btn-lg,.btn-group-lg>.btn {
+    padding: 0.5rem 1rem;
+    font-size: 1.09375rem;
+    line-height: 1.5;
+    border-radius: 0.8rem;
+}
+
+.btn-sm,.btn-group-sm>.btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.625rem;
+    line-height: 1.5;
+    border-radius: 0.4rem
+}
+
+button {
+	text-transform: capitalize;
+}
+
+.btn {
+  border: 0 !important;
+  text-transform: capitalize;
+
+}
+
+.btn:hover {
+  border: 0 !important;
+}
+
+/* Info */
+.btn-info {
+  background-color: #31bebe !important;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.btn-info:hover {
+  background-color: #48D5D5 !important;
+}
+
+/* Azul */
+.btn-blue {
+  background-color: #1f63bb !important;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.btn-blue:hover {
+  background-color: #2c76c6 !important;
+  color: #fff;
+} 
+
+/* Warning */
+.btn-warning {
+  background-color: #FFBD23 !important;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.btn-warning:hover {
+  background-color: #FFD66B !important;
+}
+
+/* Success (ojo: tenías typo en "sucess") */
+.btn-sucess {
+  background-color: #0B9789 !important;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.btn-sucess:hover {
+  background-color: #58E079 !important;
+}
+
+/* Secondary */
+.btn-secondary {
+  background-color: #919191 !important;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #B8B6B6 !important;
+}
+
+/* Danger */
+.btn-danger {
+  background-color: #E54455 !important;
+  color: #fff;
+  transition: 0.2s;
+}
+
+.btn-danger:hover {
+  background-color: #EA686E !important;
+}
+
+
+/* Botón con ícono */
+.btn.btn-icon {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin: 1px;
+  border-radius: 25%;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* ================== PAGINACIÓN ================== */
+
+.page-item.active .page-link {
+  background-color: #919191 !important;
+  color: #fff;
+  border-color: #919191 !important;
+}
+
+
+/* ================== CARDS ================== */
+
+.card {
+  border-radius: 0.85rem !important;
+}
+
+.card-header {
+  border-top-left-radius: 0.85rem !important;
+  border-top-right-radius: 0.85rem !important;
+}
+
+
+/* ================== FORMULARIOS ================== */
+
+.form-label {
+  font-weight: 600;
+}
+
+
+/* ================== ALERTAS ================== */
+
+.alert-danger-light {
+  background-color: #ffebea;
+  color: #ff291d;
+  font-weight: 600;
+}
+
+.alert-blue-ligth {
+	background-color: #dbf0ff;
+	color: #1f63bb!important;
+	font-weight: 700;
+}
+
+.alert {
+	border: 0px!important;
+	font-size: 1rem!important;
+	font-weight: 700;
+}
+
+.alert-info {
+	border: 0px!important;
+}
