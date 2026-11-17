@@ -4,14 +4,15 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
 class CreateSalesUser extends Command
 {
-    protected $signature = 'ventas:usuario {email} {--name= : Nombre del vendedor}';
-    protected $description = 'Crea un vendedor con contraseña solicitada de forma privada';
+    protected $signature = 'ventas:usuario {email} {--name= : Nombre del usuario} {--admin : Crea una cuenta administradora}';
+    protected $description = 'Crea un usuario de ventas con contraseña solicitada de forma privada';
 
     public function handle(): int
     {
@@ -31,11 +32,13 @@ class CreateSalesUser extends Command
             }
             return self::FAILURE;
         }
-        Role::findOrCreate('Vendedor', 'web');
-        $data['password'] = Hash::make($data['password']);
-        $user = User::create($data);
-        $user->assignRole('Vendedor');
-        $this->info('Vendedor creado correctamente.');
+        DB::transaction(function () use ($data) {
+            $data['password'] = Hash::make($data['password']);
+            $user = User::create($data);
+            $role = $this->option('admin') ? 'Admin' : User::SELLER_ROLE;
+            $user->assignRole(Role::findOrCreate($role, 'web'));
+        });
+        $this->info($this->option('admin') ? 'Administrador creado correctamente.' : 'Vendedor creado correctamente.');
         return self::SUCCESS;
     }
 }

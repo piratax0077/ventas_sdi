@@ -31,12 +31,13 @@ class ClientesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $clientes = Cliente::all();
+        $busqueda = trim($request->string('buscar')->limit(100)->toString());
+        $clientes = Cliente::with('rol')->buscarContacto($busqueda)
+            ->orderBy('nombre')->orderBy('id')->paginate(50)->withQueryString();
 
-
-        return view("clientes.clientes_index", ["clientes" => $clientes]);
+        return view("clientes.clientes_index", compact('clientes', 'busqueda'));
     }
 
     /**

@@ -58,6 +58,8 @@
                            type="decimal(9,2)" placeholder="Existencia">
                 </div>
 
+                @include('partials.segmento_catalogo', ['segmentoActual' => $producto->segmento_catalogo])
+                @include('partials.precio_promocional', ['precioPromocional' => $producto->precio_promocional])
                 @include("notificacion")
                 <button class="btn btn-success">Guardar</button>
                 <a class="btn btn-primary" href="{{route("productos.index")}}">Volver</a>

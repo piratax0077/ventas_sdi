@@ -45,6 +45,7 @@
                             @enderror
                         </div>
 
+                        @include('partials.segmento_catalogo')
                         <!-- Descripción -->
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
@@ -67,22 +68,7 @@
                             @enderror
                         </div>
 
-                        <!-- Tipo de Software -->
-                        <div class="mb-3">
-                            <label for="tipo" class="form-label">Tipo de Software <span class="text-danger">*</span></label>
-                            <select class="form-select @error('tipo') is-invalid @enderror"
-                                id="tipo" name="tipo" required>
-                                <option value="">-- Seleccionar --</option>
-                                <option value="web" {{old('tipo') == 'web' ? 'selected' : ''}}>Aplicación Web</option>
-                                <option value="desktop" {{old('tipo') == 'desktop' ? 'selected' : ''}}>Desktop</option>
-                                <option value="mobile" {{old('tipo') == 'mobile' ? 'selected' : ''}}>App Móvil</option>
-                                <option value="api" {{old('tipo') == 'api' ? 'selected' : ''}}>API/Servicio</option>
-                                <option value="otro" {{old('tipo') == 'otro' ? 'selected' : ''}}>Otro</option>
-                            </select>
-                            @error('tipo')
-                                <div class="invalid-feedback" style="display:block">{{$message}}</div>
-                            @enderror
-                        </div>
+                        @include('productos_software.tipos')
 
                         <!-- URL Descarga -->
                         <div class="mb-3">

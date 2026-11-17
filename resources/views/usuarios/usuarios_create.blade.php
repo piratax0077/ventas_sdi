@@ -42,6 +42,7 @@ ____          _____               _ _           _
                            type="password" placeholder="Contraseña">
                 </div>
 
+                @include('usuarios.rol')
                 @include("notificacion")
                 <button class="btn btn-success">Guardar</button>
                 <a class="btn btn-primary" href="{{route("usuarios.index")}}">Volver al listado</a>

@@ -15,8 +15,8 @@
                     </div>
                     
                     <div class="mb-4 d-flex justify-content-between align-items-center d-inline">
-                        <a href="{{route("planes.create")}}"  class="btn btn-info btn-lg">
-                            <i class="fa fa-plus-circle me-2"></i> Agregar Producto
+                        <a href="{{route("planes.create")}}" class="btn btn-catalogo-accion btn-lg">
+                            <i class="fa fa-plus-circle me-2" aria-hidden="true"></i> Agregar plan
                         </a>
                     </div>
              
@@ -26,6 +26,7 @@
         
 
             @include("notificacion")
+            @include('partials.filtro_segmento')
 
 
             {{-- Tabla de planes --}}
@@ -44,11 +45,11 @@
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Precio</th>
-                                <th>Frecuencia</th>
+                                <th class="text-center">Frecuencia</th>
                                 <th class="text-center">Usuarios</th>
                                 <th class="text-center">Dispositivos</th>
                                 <th class="text-center">Features</th>
-                                <th>Estado</th>
+                                <th class="text-center">Estado</th>
                                 <th class=" text-center">Acciones</th>
                             </tr>
                             </thead>
@@ -57,13 +58,24 @@
                                 <tr class="align-middle">
                                     <td>
                                         <div class="fw-semibold">{{$plan->nombre}}</div>
+                                        @if($nivel = \App\Plan::NIVELES[$plan->nivel ?? ''] ?? null)
+                                            <span class="etiqueta-nivel-plan plan-etiqueta">{{ $nivel }}</span>
+                                        @endif
+                                        <small class="d-block">{{ $plan->productosSoftware->pluck('nombre')->join(', ') ?: 'Pendiente de vincular software' }}</small>
+                                        <small class="text-muted">{{ \App\CatalogoSegmentos::etiqueta($plan->segmento_catalogo) }}</small>
                                     </td>
                                     <td>
                                         <small>{{Str::limit($plan->descripcion, 50)}}</small>
                                     </td>
-                                    <td class="text-end fw-bold">${{number_format($plan->precio, 2)}}</td>
-                                    <td>
-                                        <span class="badge bg-info text-white">{{ucfirst($plan->frecuencia)}}</span>
+                                    <td class="text-end fw-bold">
+                                        @if($plan->precioAplicado() < $plan->precio)
+                                            <del class="text-muted">${{number_format($plan->precio, 2)}}</del>
+                                            <span class="etiqueta-nivel-plan plan-etiqueta plan-etiqueta-activo">Promoción</span>
+                                        @endif
+                                        ${{number_format($plan->precioAplicado(), 2)}}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="etiqueta-nivel-plan plan-etiqueta plan-etiqueta-ciclo">{{ucfirst($plan->frecuencia)}}</span>
                                     </td>
                                     <td class="text-center">
                                         <span>{{$plan->cantidad_usuarios}}</span>
@@ -73,30 +85,30 @@
                                     </td>
                                     <td class="text-center">
                                         @if(is_array($plan->features) && count($plan->features) > 0)
-                                            <button class="btn btn-sm btn-blue" data-bs-toggle="popover"
+                                            <button type="button" class="btn btn-blue plan-accion" data-bs-toggle="popover"
                                                 data-bs-title="Features" data-bs-content="{{implode(', ', $plan->features)}}" title="Ver características">
-                                                <i class="fa fa-star me-1"></i> {{count($plan->features)}}
+                                                <i class="fa fa-star" aria-hidden="true"></i> {{count($plan->features)}}
                                             </button>
                                         @else
                                             <span>-</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         @if($plan->estado)
-                                            <span class="badge bg-success text-white">Activo</span>
+                                            <span class="etiqueta-nivel-plan plan-etiqueta plan-etiqueta-activo">Activo</span>
                                         @else
-                                            <span class="badge bg-danger text-white">Inactivo</span>
+                                            <span class="etiqueta-nivel-plan plan-etiqueta plan-etiqueta-inactivo">Inactivo</span>
                                         @endif
                                     </td>
                                     <td>
-                                        <div class="d-flex">
-                                            <a class="btn btn-icon btn-warning" href="{{route("planes.edit", [$plan])}}" title="Editar plan">
+                                        <div class="plan-acciones">
+                                            <a class="btn btn-warning plan-accion" href="{{route("planes.edit", [$plan])}}" title="Editar plan" aria-label="Editar plan">
                                                 <i class="fa fa-edit"></i>
                                             </a>
                                             <form action="{{route("planes.destroy", [$plan])}}" method="post" style="display:inline">
                                                 @method("delete")
                                                 @csrf
-                                                <button type="submit" class="btn btn-icon btn-danger" title="Eliminar plan" onclick="return confirm('¿Está seguro que desea eliminar este plan?')">
+                                                <button type="submit" class="btn btn-danger plan-accion" title="Eliminar plan" aria-label="Eliminar plan" onclick="return confirm('¿Está seguro que desea eliminar este plan?')">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </form>
@@ -222,6 +234,7 @@
         })
 
         // Inicializar DataTables
+        @if(count($planes) > 0)
         $(document).ready(function() {
             $('#tablaPlanes').DataTable({
                 language: {
@@ -234,5 +247,6 @@
                 ]
             });
         });
+        @endif
     </script>
 @endsection

@@ -40,17 +40,17 @@ class LoginController extends Controller
     }
 
     /**
-     * El usuario se autenticó correctamente. Verificar que tenga el rol de vendedor.
+     * Verificar que la cuenta tenga acceso al sistema de ventas.
      */
     protected function authenticated(Request $request, $user)
     {
-        if (! $user->hasRole('Vendedor')) {
+        if (! $user->canAccessSales()) {
             $this->guard()->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
 
             return redirect()->route('login')
-                ->withErrors(['email' => 'No tienes permiso para acceder. Solo los vendedores pueden iniciar sesión.']);
+                ->withErrors(['email' => 'Tu cuenta no tiene acceso al sistema de ventas.']);
         }
     }
 }

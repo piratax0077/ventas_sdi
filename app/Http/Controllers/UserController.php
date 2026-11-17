@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -15,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        return view("usuarios.usuarios_index", ["usuarios" => User::all()]);
+        return view("usuarios.usuarios_index", ["usuarios" => User::with('roles')->get()]);
     }
 
     /**
@@ -40,11 +43,16 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
+            'role' => ['required', Rule::in([User::SELLER_ROLE, User::SUBADMIN_ROLE])],
         ]);
-        $usuario = new User($data);
-        $usuario->password = Hash::make($data['password']);
-        $usuario->saveOrFail();
-        $usuario->assignRole('Vendedor');
+        DB::transaction(function () use ($data) {
+            $usuario = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
+            $usuario->assignRole(Role::findOrCreate($data['role'], 'web'));
+        });
         return redirect()->route("usuarios.index")->with("mensaje", "Usuario guardado");
     }
 
@@ -67,6 +75,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        abort_if($user->isSalesAdministrator(), 403);
         return view("usuarios.usuarios_edit", ["usuario" => $user,
         ]);
     }
@@ -80,16 +89,23 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
+        abort_if($user->isSalesAdministrator(), 403);
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,'.$user->id,
             'password' => 'nullable|string|min:8',
+            'role' => ['sometimes', 'required', Rule::in([User::SELLER_ROLE, User::SUBADMIN_ROLE])],
         ]);
-        $user->fill(collect($data)->except('password')->all());
-        if (!empty($data['password'])) {
-            $user->password = Hash::make($data['password']);
-        }
-        $user->saveOrFail();
+        DB::transaction(function () use ($user, $data) {
+            $user->fill(['name' => $data['name'], 'email' => $data['email']]);
+            if (!empty($data['password'])) {
+                $user->password = Hash::make($data['password']);
+            }
+            $user->saveOrFail();
+            if (isset($data['role'])) {
+                $user->syncRoles(Role::findOrCreate($data['role'], 'web'));
+            }
+        });
         return redirect()->route("usuarios.index")->with("mensaje", "Usuario actualizado");
     }
 
@@ -101,6 +117,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        abort_if($user->isSalesAdministrator(), 403);
         $user->delete();
         return redirect()->route("usuarios.index")->with("mensaje", "Usuario eliminado");
     }

@@ -46,6 +46,7 @@
                             @enderror
                         </div>
 
+                        @include('partials.segmento_catalogo', ['segmentoActual' => $productoSoftware->segmento_catalogo])
                         <!-- Descripción -->
                         <div class="mb-3">
                             <label for="descripcion" class="form-label">Descripción <span class="text-danger">*</span></label>
@@ -68,22 +69,7 @@
                             @enderror
                         </div>
 
-                        <!-- Tipo de Software -->
-                        <div class="mb-3">
-                            <label for="tipo" class="form-label">Tipo de Software <span class="text-danger">*</span></label>
-                            <select class="form-select @error('tipo') is-invalid @enderror"
-                                id="tipo" name="tipo" required>
-                                <option value="">-- Seleccionar --</option>
-                                <option value="web" {{old('tipo', $productoSoftware->tipo) == 'web' ? 'selected' : ''}}>Aplicación Web</option>
-                                <option value="desktop" {{old('tipo', $productoSoftware->tipo) == 'desktop' ? 'selected' : ''}}>Desktop</option>
-                                <option value="mobile" {{old('tipo', $productoSoftware->tipo) == 'mobile' ? 'selected' : ''}}>App Móvil</option>
-                                <option value="api" {{old('tipo', $productoSoftware->tipo) == 'api' ? 'selected' : ''}}>API/Servicio</option>
-                                <option value="otro" {{old('tipo', $productoSoftware->tipo) == 'otro' ? 'selected' : ''}}>Otro</option>
-                            </select>
-                            @error('tipo')
-                                <div class="invalid-feedback" style="display:block">{{$message}}</div>
-                            @enderror
-                        </div>
+                        @include('productos_software.tipos', ['tiposActuales' => $productoSoftware->tiposSeleccionados()])
 
                         <!-- URL Descarga -->
                         <div class="mb-3">

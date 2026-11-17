@@ -3,7 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Laravel\Passport\Passport;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        // Passport registra sus rutas y utiliza clientes UUID automáticamente.
+        Gate::define('administrar-usuarios', fn (User $user) => $user->isSalesAdministrator());
+        Gate::define('administrar-catalogo', fn (User $user) =>
+            $user->isSalesAdministrator() || $user->hasRole(User::SUBADMIN_ROLE, 'web')
+        );
     }
 }

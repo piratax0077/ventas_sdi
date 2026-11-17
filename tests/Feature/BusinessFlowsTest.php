@@ -3,6 +3,7 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use App\Producto;
+use App\ProductoSoftware;
 use App\Plan;
 use App\Cliente;
 use Illuminate\Support\Facades\DB;
@@ -62,14 +63,49 @@ class BusinessFlowsTest extends TestCase
         ], $attributes));
     }
 
+    private function software(array $attributes = []): ProductoSoftware
+    {
+        return ProductoSoftware::create(array_replace([
+            'nombre' => 'Software de prueba',
+            'descripcion' => 'Software para uso por suscripción',
+            'tipo' => 'web',
+            'estado' => true,
+        ], $attributes));
+    }
+
+    private function plan(array $attributes = [], ?ProductoSoftware $software = null): Plan
+    {
+        $plan = Plan::create(array_replace([
+            'nombre' => 'Plan de prueba',
+            'descripcion' => 'Suscripción de prueba',
+            'precio' => 200,
+            'frecuencia' => 'mensual',
+            'cantidad_usuarios' => 1,
+            'cantidad_dispositivos' => 1,
+            'estado' => true,
+        ], $attributes));
+        $plan->productosSoftware()->attach(($software ?? $this->software())->id);
+
+        return $plan;
+    }
+
     private function client(): Cliente
     {
         return Cliente::create(['nombre' => 'Cliente de prueba', 'telefono' => '123456789']);
     }
 
+    private function actAsAdministrator(): User
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole(\Spatie\Permission\Models\Role::findOrCreate('Admin', 'web'));
+        $this->actingAs($admin);
+        return $admin;
+    }
+
     public function test_business_pages_render_with_real_mysql_schema(): void
     {
-        foreach (['home','perfil','clientes','clientes/create','usuarios','usuarios/create','productos','productos/create',
+        $this->actAsAdministrator();
+        foreach (['home','perfil','clientes','clientes/create','usuarios','usuarios/create','catalogo-productos',
             'planes','planes/create','planes-catalogo','productos-software','productos-software/create',
             'mantenimiento','mantenimiento/create','configuracion','configuracion/create','reportes','reportes/create',
             'soporte','mis-solicitudes','vender','ventas','acerca-de'] as $path) {
@@ -77,41 +113,33 @@ class BusinessFlowsTest extends TestCase
         }
     }
 
-    public function test_physical_sale_reduces_stock_and_records_details(): void
+    public function test_physical_products_cannot_be_sold_or_created(): void
     {
         $product = $this->product();
-        $client = $this->client();
-        $this->postJson('/productoDeVenta', ['tipo' => 'producto', 'codigo' => $product->codigo_barras])->assertOk()->assertJsonPath('ok', true);
-        $this->post('/terminarOCancelarVenta', ['accion' => 'terminar', 'id_cliente' => $client->id])->assertRedirect('/vender');
-        $this->assertEquals(1, $product->fresh()->existencia);
-        $this->assertDatabaseHas('productos_vendidos', ['codigo_barras' => 'TEST-001', 'cantidad' => 1, 'precio' => 100]);
-        $id = DB::table('ventas')->value('id');
-        $this->get('/ventas')->assertOk()->assertSee('100');
-        $this->get('/ventas/'.$id)->assertOk();
-        $this->get('/ventas/ticket-pdf/'.$id)->assertOk();
+        $this->postJson('/productoDeVenta', ['tipo' => 'producto', 'codigo' => $product->codigo_barras])
+            ->assertUnprocessable();
+        $this->actAsAdministrator();
+        $this->get('/productos/create')->assertRedirect('/productos-software/create');
+        $this->postJson('/productos', [])->assertMethodNotAllowed();
+        $this->assertEquals(2, $product->fresh()->existencia);
+        $this->assertDatabaseCount('ventas', 0);
     }
 
-    public function test_stock_errors_are_reported_without_partial_sales(): void
+    public function test_unavailable_plan_rolls_back_the_subscription_sale(): void
     {
-        $first = $this->product();
-        $last = $this->product(['codigo_barras' => 'TEST-002', 'existencia' => 1]);
-        $client = $this->client();
-        foreach ([$first, $last] as $product) {
-            $this->postJson('/productoDeVenta', ['tipo' => 'producto', 'codigo' => $product->codigo_barras])->assertOk();
-        }
-        $this->postJson('/productoDeVenta', ['tipo' => 'producto', 'codigo' => $last->codigo_barras])->assertUnprocessable();
-        $last->update(['existencia' => 0]);
-        $this->postJson('/terminarOCancelarVenta', ['accion' => 'terminar', 'id_cliente' => $client->id])->assertUnprocessable();
-        $this->assertEquals(2, $first->fresh()->existencia);
+        $plan = $this->plan();
+        $this->postJson('/productoDeVenta', ['id' => $plan->id])->assertOk();
+        $plan->update(['estado' => false]);
+        $this->postJson('/terminarOCancelarVenta', ['accion' => 'terminar', 'id_cliente' => $this->client()->id])
+            ->assertUnprocessable();
         $this->assertDatabaseCount('ventas', 0);
-        $this->assertDatabaseCount('productos_vendidos', 0);
-        $this->assertCount(2, session('productos'));
+        $this->assertDatabaseCount('venta_planes', 0);
     }
 
     public function test_memberships_record_the_plan_without_reducing_physical_stock(): void
     {
         $client = $this->client();
-        $plan = Plan::create(['nombre' => 'Plan de prueba', 'descripcion' => 'Descripción', 'precio' => 200,
+        $plan = $this->plan(['nombre' => 'Plan de prueba', 'descripcion' => 'Descripción', 'precio' => 200,
             'frecuencia' => 'mensual', 'cantidad_usuarios' => 1, 'cantidad_dispositivos' => 1, 'estado' => true]);
         $this->postJson('/productoDeVenta', ['tipo' => 'membresia', 'id' => $plan->id])->assertOk();
         $this->post('/terminarOCancelarVenta', ['accion' => 'terminar', 'id_cliente' => $client->id])->assertRedirect('/vender');
@@ -129,6 +157,7 @@ class BusinessFlowsTest extends TestCase
 
     public function test_editing_a_user_preserves_the_password_when_omitted(): void
     {
+        $this->actAsAdministrator();
         $user = User::create(['name' => 'Usuario', 'email' => 'other@example.test', 'password' => Hash::make('original-password')]);
         $hash = $user->password;
         $this->get('/usuarios/'.$user->id.'/edit')->assertOk()->assertDontSee($hash);
@@ -200,11 +229,12 @@ class BusinessFlowsTest extends TestCase
 
     public function test_catalog_crud_and_detail_pages(): void
     {
+        $this->actAsAdministrator();
         $cases = [
             ['planes', 'planes', ['nombre' => 'Plan prueba', 'descripcion' => 'Descripción', 'precio' => 200,
-                'frecuencia' => 'mensual', 'cantidad_usuarios' => 1, 'cantidad_dispositivos' => 1, 'estado' => 1]],
+                'frecuencia' => 'mensual', 'cantidad_usuarios' => 1, 'cantidad_dispositivos' => 1, 'estado' => 1, 'software_ids' => [$this->software()->id]]],
             ['productos-software', 'productos_software', ['nombre' => 'Software prueba', 'descripcion' => 'Descripción',
-                'versión' => '1.0', 'tipo' => 'web', 'url_descarga' => 'https://example.test', 'estado' => 1]],
+                'versión' => '1.0', 'tipos' => ['web', 'mobile'], 'url_descarga' => 'https://example.test', 'estado' => 1]],
             ['configuracion', 'configuraciones', ['clave' => 'test_clave', 'valor' => 'Prueba', 'tipo' => 'text', 'categoria' => 'general', 'estado' => 1]],
             ['mantenimiento', 'mantenimientos', ['descripcion' => 'Prueba', 'tipo' => 'sistema',
                 'fecha_inicio' => '2026-10-21 10:00:00', 'estado' => 'pendiente']],
@@ -212,11 +242,15 @@ class BusinessFlowsTest extends TestCase
         ];
         foreach ($cases as [$route, $table, $payload]) {
             $this->post('/'.$route, $payload)->assertRedirect('/'.$route)->assertSessionHasNoErrors();
-            $id = DB::table($table)->value('id');
+            $id = DB::table($table)->latest('id')->value('id');
             $this->assertNotNull($id, $table);
             $this->get('/'.$route)->assertOk();
             $this->get('/'.$route.'/'.$id)->assertOk();
             $this->get('/'.$route.'/'.$id.'/edit')->assertOk();
+            if ($table === 'productos_software') {
+                $this->assertSame(['web', 'mobile'], ProductoSoftware::findOrFail($id)->tiposSeleccionados());
+                $this->get('/'.$route.'/'.$id)->assertSee('Aplicación Web')->assertSee('App Móvil');
+            }
             $this->put('/'.$route.'/'.$id, $payload)->assertRedirect()->assertSessionHasNoErrors();
             $this->delete('/'.$route.'/'.$id)->assertRedirect('/'.$route);
             $this->assertDatabaseMissing($table, ['id' => $id]);
@@ -243,18 +277,26 @@ class BusinessFlowsTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_product_validation_and_crud(): void
+    public function test_plan_requires_software_and_a_monthly_or_annual_cycle(): void
     {
-        $payload = ['codigo_barras' => 'CRUD-001', 'descripcion' => 'Producto', 'precio_compra' => 10, 'precio_venta' => 20, 'existencia' => 3];
-        $this->post('/productos', $payload)->assertRedirect('/productos')->assertSessionHasNoErrors();
-        $product = Producto::where('codigo_barras', 'CRUD-001')->firstOrFail();
-        $this->get('/productos/'.$product->id.'/edit')->assertOk();
-        $this->postJson('/productos', $payload)->assertUnprocessable();
-        $this->putJson('/productos/'.$product->id, array_merge($payload, ['existencia' => -1]))->assertUnprocessable();
-        $this->put('/productos/'.$product->id, array_merge($payload, ['existencia' => 4]))->assertRedirect('/productos');
-        $this->assertEquals(4, $product->fresh()->existencia);
-        $this->delete('/productos/'.$product->id)->assertRedirect('/productos');
-        $this->assertDatabaseMissing('productos', ['id' => $product->id]);
+        $this->actAsAdministrator();
+        $software = $this->software();
+        $payload = [
+            'nombre' => 'Plan anual de prueba', 'descripcion' => 'Plan de software', 'nivel' => 'premium',
+            'precio' => 100, 'frecuencia' => 'anual', 'cantidad_usuarios' => 1, 'cantidad_dispositivos' => 1,
+            'estado' => 1,
+        ];
+        $this->postJson('/planes', $payload)->assertUnprocessable()->assertJsonValidationErrors('software_ids');
+        $payload['software_ids'] = [$software->id];
+        $this->postJson('/planes', array_replace($payload, ['frecuencia' => 'trimestral']))
+            ->assertUnprocessable()->assertJsonValidationErrors('frecuencia');
+        $this->postJson('/planes', $payload + ['precio_promocional' => 150])
+            ->assertUnprocessable()->assertJsonValidationErrors('precio_promocional');
+        $this->post('/planes', $payload)->assertRedirect('/planes')->assertSessionHasNoErrors();
+        $plan = Plan::where('nombre', $payload['nombre'])->firstOrFail();
+        $this->assertSame('anual', $plan->frecuencia);
+        $this->assertSame('premium', $plan->nivel);
+        $this->assertSame([$software->id], $plan->productosSoftware->modelKeys());
     }
 
     public function test_sales_are_scoped_to_the_responsible_user(): void
@@ -270,16 +312,161 @@ class BusinessFlowsTest extends TestCase
         $this->assertDatabaseHas('ventas', ['id' => $sale->id]);
     }
 
+    public function test_catalog_and_staff_permissions_are_separated(): void
+    {
+        $seller = auth()->user();
+        $this->get('/vender')->assertOk();
+        $this->get('/usuarios')->assertForbidden();
+        $this->get('/productos-software/create')->assertForbidden();
+        $this->postJson('/productos-software', [])->assertForbidden();
+        $this->actingAs($seller, 'api')->postJson('/api/auth/producto', [])->assertNotFound();
+
+        $admin = $this->actAsAdministrator();
+        $this->get('/usuarios')->assertOk();
+        $this->delete('/usuarios/'.$admin->id)->assertForbidden();
+        $this->post('/usuarios', [
+            'name' => 'Subadministrador de prueba',
+            'email' => 'subadmin@example.test',
+            'password' => 'test-password',
+            'role' => User::SUBADMIN_ROLE,
+        ])->assertRedirect('/usuarios')->assertSessionHasNoErrors();
+
+        $subadmin = User::where('email', 'subadmin@example.test')->firstOrFail();
+        $this->assertSame([User::SUBADMIN_ROLE], $subadmin->getRoleNames()->all());
+        $this->actingAs($subadmin)->get('/productos-software/create')->assertOk();
+        $this->get('/usuarios')->assertForbidden();
+        $this->get('/configuracion')->assertForbidden();
+        $this->putJson('/usuarios/'.$seller->id, ['role' => 'Admin'])->assertForbidden();
+    }
+
+    public function test_catalog_filters_software_and_subscription_plans(): void
+    {
+        $seller = auth()->user();
+        $this->actAsAdministrator();
+        $payload = ['nombre' => 'Software para pacientes', 'descripcion' => 'Acceso mensual', 'tipo' => 'web', 'estado' => 1];
+        $this->postJson('/productos-software', $payload + ['segmento_catalogo' => 'medichile.tutores'])
+            ->assertUnprocessable()->assertJsonValidationErrors('segmento_catalogo');
+        $this->post('/productos-software', $payload + ['segmento_catalogo' => 'medichile.pacientes'])
+            ->assertRedirect('/productos-software')->assertSessionHasNoErrors();
+        $vet = $this->software(['nombre' => 'Software para tutores', 'segmento_catalogo' => 'veterchile.tutores']);
+        $plan = $this->plan([
+            'nombre' => 'Plan veterinario',
+            'nivel' => 'gold',
+            'precio_promocional' => 150,
+            'segmento_catalogo' => 'veterchile.tutores',
+        ], $vet);
+
+        $this->actingAs($seller)->get('/catalogo-productos?segmento=medichile')
+            ->assertOk()->assertSee('Software para pacientes')->assertDontSee('Software para tutores');
+        $this->get('/catalogo-productos?segmento=veterchile.tutores')
+            ->assertOk()->assertSee('Software para tutores')->assertDontSee('Software para pacientes');
+        $this->get('/planes-catalogo?segmento=medichile')->assertOk()->assertDontSee($plan->nombre);
+        $this->get('/planes-catalogo?software_id='.$vet->id.'&frecuencia=anual')->assertOk()->assertDontSee($plan->nombre);
+        $this->get('/planes-catalogo?software_id='.$vet->id.'&frecuencia=mensual')->assertOk()->assertSee($plan->nombre);
+        $this->get('/planes-catalogo?nivel=basico')->assertOk()->assertDontSee($plan->nombre);
+        $this->get('/planes-catalogo?nivel=gold')->assertOk()->assertSee($plan->nombre);
+        $this->post('/productoDeVenta', ['id' => $plan->id])->assertRedirect('/vender');
+        $this->get('/vender')->assertOk()->assertSee($plan->nombre);
+        $this->post('/terminarOCancelarVenta', ['id_cliente' => $this->client()->id, 'accion' => 'terminar'])
+            ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('venta_planes', ['id_plan' => $plan->id, 'precio_unitario' => 150]);
+        $ventaId = DB::table('ventas')->value('id');
+        $this->get('/ventas/'.$ventaId)->assertOk()->assertSee($plan->nombre);
+        $this->get('/ventas/ticket-pdf/'.$ventaId)->assertOk();
+    }
+
     public function test_api_sales_creation_and_role_protection(): void
     {
         $seller = auth()->user();
         \Laravel\Passport\Passport::actingAs($seller);
-        $this->postJson('/api/auth/venta', ['id_cliente' => $this->client()->id])->assertOk();
+        $payload = ['id_cliente' => $this->client()->id];
+        $this->postJson('/api/auth/venta', $payload)->assertUnprocessable()->assertJsonValidationErrors('id_plan');
+        $this->postJson('/api/auth/venta', $payload + ['id_plan' => $this->plan()->id])->assertOk();
         $this->assertDatabaseHas('ventas', ['id_responsable' => $seller->id]);
         $this->getJson('/api/auth/ventas')->assertOk()->assertJsonCount(1);
         $user = User::create(['name' => 'Sin rol', 'email' => 'api-other@example.test', 'password' => Hash::make('test-password')]);
         \Laravel\Passport\Passport::actingAs($user);
-        $this->getJson('/api/auth/productos')->assertForbidden();
+        $this->getJson('/api/auth/ventas')->assertForbidden();
+    }
+
+    public function test_sellers_can_contact_clients_and_track_their_own_responses(): void
+    {
+        $cliente = Cliente::create([
+            'nombre' => 'Contacto de prueba', 'correo' => 'contacto@test-sdi.cl',
+            'telefono' => '+56953728416',
+        ]);
+        $this->get('/vender')->assertOk()->assertSee('Buscar cliente para contactar');
+        $this->get('/clientes/'.$cliente->id.'/contacto')->assertOk()
+            ->assertSee('https://wa.me/56953728416')->assertSee('Abrir correo');
+        $lote = (string) \Illuminate\Support\Str::uuid();
+        $datos = ['canal' => 'whatsapp', 'lote' => $lote];
+        $this->post('/clientes/'.$cliente->id.'/contacto', $datos)->assertRedirect();
+        $this->post('/clientes/'.$cliente->id.'/contacto', $datos)->assertRedirect();
+        $this->assertDatabaseCount('seguimientos_contacto', 1);
+        $registro = \App\SeguimientoContacto::firstOrFail();
+        $this->patch('/vender/seguimiento/'.$registro->id, [
+            'estado' => 'respondio', 'nota' => 'Solicitó información.',
+        ])->assertRedirect()->assertSessionHasNoErrors();
+        $this->assertNotNull($registro->fresh()->respondio_en);
+        $this->get('/vender/seguimiento?estado=respondio')->assertOk()->assertSee('Solicitó información.');
+
+        $otroVendedor = User::factory()->create();
+        $otroVendedor->assignRole('Vendedor');
+        $this->actingAs($otroVendedor)->patch('/vender/seguimiento/'.$registro->id, ['estado' => 'contactado'])->assertNotFound();
+        $this->get('/vender/seguimiento')->assertOk()->assertDontSee('Solicitó información.');
+        $this->get('/campanas')->assertForbidden();
+    }
+
+    public function test_preparing_a_campaign_creates_pending_followups_and_does_not_send_messages(): void
+    {
+        $this->actAsAdministrator();
+        $clientes = [
+            Cliente::create(['nombre' => 'Primero', 'correo' => 'primero@test-sdi.cl', 'telefono' => '']),
+            Cliente::create(['nombre' => 'Segundo', 'correo' => 'segundo@test-sdi.cl', 'telefono' => '']),
+        ];
+        $datos = [
+            'canal' => 'correo', 'asunto' => 'Campaña de prueba', 'mensaje' => 'Texto de prueba.',
+            'lote' => (string) \Illuminate\Support\Str::uuid(),
+            'destinatarios' => array_map(fn (Cliente $cliente) => $cliente->id, $clientes),
+        ];
+        $this->post('/campanas/preparar', $datos)->assertOk()->assertSee('mailto:?bcc=');
+        $this->post('/campanas/preparar', $datos)->assertOk();
+        $this->assertDatabaseCount('seguimientos_contacto', 2);
+        $this->assertDatabaseHas('seguimientos_contacto', ['referencia' => 'Campaña de prueba', 'estado' => 'pendiente']);
+        $this->get('/vender/seguimiento?estado=pendiente')->assertOk()->assertSee('Campaña de prueba');
+        Mail::assertNothingSent();
+    }
+
+    public function test_only_an_administrator_can_preview_edit_and_remove_training_videos(): void
+    {
+        $seller = auth()->user();
+        $video = \App\VideoCapacitacion::firstOrFail();
+        $this->get('/vender/videos')->assertOk()->assertSee($video->titulo);
+        $this->get('/administracion/videos')->assertForbidden();
+        $this->put('/administracion/videos/'.$video->id, ['titulo' => 'No autorizado'])->assertForbidden();
+
+        $admin = $this->actAsAdministrator();
+        $this->get('/administracion/videos')->assertOk()->assertSee($video->titulo);
+        $this->get('/administracion/videos/'.$video->id)->assertOk()->assertSee('presentacion-fmu.mp4');
+        $this->get('/administracion/videos/'.$video->id.'/edit')->assertOk()->assertSee('Reemplazar video');
+        Storage::persistentFake('public');
+        $this->put('/administracion/videos/'.$video->id, [
+            'titulo' => 'Capacitación FMU actualizada',
+            'descripcion' => 'Descripción de prueba.',
+            'video' => new UploadedFile(public_path($video->video), 'capacitacion.mp4', null, UPLOAD_ERR_OK, true),
+            'subtitulos' => UploadedFile::fake()->createWithContent('subtitulos.vtt', "WEBVTT\n\n00:00:00.000 --> 00:00:01.000\nPrueba.\n"),
+        ])->assertRedirect()->assertSessionHasNoErrors();
+
+        $actualizado = $video->fresh();
+        $archivoVideo = str_replace('storage/', '', $actualizado->video);
+        $archivoSubtitulos = str_replace('storage/', '', $actualizado->subtitulos);
+        Storage::disk('public')->assertExists([$archivoVideo, $archivoSubtitulos]);
+        $this->assertNull($actualizado->portada);
+        $this->actingAs($seller)->get('/vender/videos')->assertOk()->assertSee($actualizado->titulo);
+        $this->actingAs($admin)->delete('/administracion/videos/'.$video->id)->assertRedirect('/administracion/videos');
+        Storage::disk('public')->assertMissing([$archivoVideo, $archivoSubtitulos]);
+        $this->actingAs($seller)->get('/vender/videos')->assertOk()
+            ->assertDontSee($actualizado->titulo)->assertSee('Práctica de venta');
     }
 
     public function test_support_reply_attachments_are_linked_to_the_reply(): void

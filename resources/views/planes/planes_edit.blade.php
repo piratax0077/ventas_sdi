@@ -58,6 +58,10 @@
                         </div>
 
                         <!-- Precio y Frecuencia -->
+                        @include('planes.software', ['softwareSeleccionado' => $plan->productosSoftware->modelKeys()])
+                        @include('planes.nivel', ['nivelActual' => $plan->nivel])
+                        @include('partials.segmento_catalogo', ['segmentoActual' => $plan->segmento_catalogo])
+                        @include('partials.precio_promocional', ['precioPromocional' => $plan->precio_promocional])
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -80,8 +84,6 @@
                                         id="frecuencia" name="frecuencia" required>
                                         <option value="">-- Seleccionar --</option>
                                         <option value="mensual" {{old('frecuencia', $plan->frecuencia) == 'mensual' ? 'selected' : ''}}>Mensual</option>
-                                        <option value="trimestral" {{old('frecuencia', $plan->frecuencia) == 'trimestral' ? 'selected' : ''}}>Trimestral</option>
-                                        <option value="semestral" {{old('frecuencia', $plan->frecuencia) == 'semestral' ? 'selected' : ''}}>Semestral</option>
                                         <option value="anual" {{old('frecuencia', $plan->frecuencia) == 'anual' ? 'selected' : ''}}>Anual</option>
                                     </select>
                                     @error('frecuencia')
@@ -156,7 +158,7 @@
 
                 <!-- Botones de Acción -->
                 <div class="mt-4 mb-4">
-                    <button type="submit" class="btn btn-primary btn-lg">
+                    <button type="submit" class="btn btn-primary btn-lg" @disabled($software->isEmpty())>
                         <i class="fa fa-save"></i> Actualizar Plan
                     </button>
                     <a href="{{route("planes.index")}}" class="btn btn-secondary btn-lg">

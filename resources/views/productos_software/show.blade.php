@@ -42,8 +42,10 @@
                                 <strong>Versión:</strong> {{$productoSoftware->versión ?? 'No especificada'}}
                             </p>
                             <p>
-                                <strong>Tipo:</strong>
-                                <span class="badge bg-info">{{ucfirst($productoSoftware->tipo)}}</span>
+                                <strong>Tipos</strong>
+                                @foreach($productoSoftware->nombresDeTipos() as $tipo)
+                                    <span class="badge bg-info">{{ $tipo }}</span>
+                                @endforeach
                             </p>
                         </div>
                         <div class="col-md-6">

@@ -25,6 +25,7 @@
        
 
             @include("notificacion")
+            @include('partials.filtro_segmento')
 
             
             {{-- Tabla de productos --}}
@@ -43,7 +44,7 @@
                                 <th>Nombre</th>
                                 <th>Descripción</th>
                                 <th>Versión</th>
-                                <th>Tipo</th>
+                                <th>Tipos</th>
                                 <th>URL Descarga</th>
                                 <th>Estado</th>
                                 <th class="text-center">Acciones</th>
@@ -54,6 +55,7 @@
                                 <tr class="align-middle">
                                     <td>
                                         <div class="fw-semibold">{{$producto->nombre}}</div>
+                                        <small class="text-muted">{{ \App\CatalogoSegmentos::etiqueta($producto->segmento_catalogo) }}</small>
                                     </td>
                                     <td>
                                         <small >{{Str::limit($producto->descripcion, 50)}}</small>
@@ -66,7 +68,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <span>{{ucfirst($producto->tipo)}}</span>
+                                        <span>{{ implode(', ', $producto->nombresDeTipos()) }}</span>
                                     </td>
                                     <td>
                                         @if($producto->url_descarga)
@@ -216,6 +218,7 @@
 
     <script>
         // Inicializar DataTables
+        @if(count($productosSoftware) > 0)
         $(document).ready(function() {
             $('#tableProductosSoftware').DataTable({
                 language: {
@@ -228,5 +231,6 @@
                 ]
             });
         });
+        @endif
     </script>
 @endsection

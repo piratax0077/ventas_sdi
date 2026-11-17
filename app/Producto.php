@@ -27,6 +27,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
-    protected $fillable = ["codigo_barras", "descripcion", "precio_compra", "precio_venta", "existencia",
+    protected $fillable = ["codigo_barras", "descripcion", "precio_compra", "precio_venta", "precio_promocional", "existencia",
+        'segmento_catalogo',
     ];
+
+    public function precioAplicado(): float
+    {
+        return min($this->precio_venta, $this->precio_promocional ?? $this->precio_venta);
+    }
 }

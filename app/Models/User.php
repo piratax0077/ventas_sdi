@@ -11,6 +11,20 @@ class User extends Authenticatable implements \Laravel\Passport\Contracts\OAuthe
 {
     use Notifiable, HasApiTokens, HasRoles, \Illuminate\Database\Eloquent\Factories\HasFactory;
 
+    public const ADMIN_ROLES = ['Admin', 'admin'];
+    public const SUBADMIN_ROLE = 'Subadministrador';
+    public const SELLER_ROLE = 'Vendedor';
+
+    public function isSalesAdministrator(): bool
+    {
+        return $this->hasRole(self::ADMIN_ROLES, 'web');
+    }
+
+    public function canAccessSales(): bool
+    {
+        return $this->hasRole([...self::ADMIN_ROLES, self::SUBADMIN_ROLE, self::SELLER_ROLE], 'web');
+    }
+
     /**
      * The attributes that are mass assignable.
      *

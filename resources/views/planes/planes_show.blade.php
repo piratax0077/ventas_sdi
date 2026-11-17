@@ -28,6 +28,9 @@
             <div class="card mt-4">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">{{$plan->nombre}}</h4>
+                    @if($nivel = \App\Plan::NIVELES[$plan->nivel ?? ''] ?? null)
+                        <span class="etiqueta-nivel-plan">{{ $nivel }}</span>
+                    @endif
                 </div>
                 <div class="card-body">
                     <div class="row mb-4">

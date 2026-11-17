@@ -24,6 +24,19 @@
 
 
             @include("notificacion")
+            <form method="get" action="{{ route('clientes.index') }}" class="d-flex flex-wrap align-items-end gap-2 mb-3">
+                <div>
+                    <label for="buscar">Buscar cliente</label>
+                    <input class="form-control" name="buscar" id="buscar" type="search" value="{{ $busqueda }}" placeholder="Nombre, RUT, correo o teléfono">
+                </div>
+                <button class="btn btn-catalogo-accion">Buscar</button>
+                @if($busqueda !== '')
+                    <a class="btn btn-outline-secondary" href="{{ route('clientes.index') }}">Limpiar</a>
+                @endif
+                @can('administrar-catalogo')
+                    <a class="btn btn-outline-primary" href="{{ route('campanas.index') }}">Preparar campaña</a>
+                @endcan
+            </form>
 
        
 
@@ -32,19 +45,17 @@
                 <div class="card-header bg-light border-bottom">
                     <h5 class="mb-0 fw-semibold d-inline">
                         Listado de Clientes
-                        <h6 class="badge bg-primary ms-2 text-white">{{ count($clientes) }}</h6>
+                        <h6 class="badge bg-primary ms-2 text-white">{{ $clientes->total() }}</h6>
                     </h5>
                 </div>
                 <div class="card-body p-3">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table id="tablaClientes" class="table table-hover mb-0">
                             <thead class="table-light">
                             <tr>
-                                <th>RUT</th>
-                                <th>Nombre</th>
-                                <th>Apellido Paterno</th>
-                                <th>Apellido Materno</th>
+                                <th>Cliente</th>
                                 <th>Teléfono</th>
+                                <th>Correo</th>
                                 <th>Rol</th>
                                 <th>Dirección</th>
                                 <th class="text-center">Acciones</th>
@@ -54,39 +65,45 @@
                             @forelse($clientes as $cliente)
                                 <tr class="align-middle">
                                     <td>
-                                        <code class="text-primary font-weight-bold">{{$cliente->rut}}</code>
+                                        <div class="fw-semibold">
+                                            {{ trim(implode(' ', array_filter([$cliente->nombre, $cliente->primer_apellido, $cliente->segundo_apellido]))) }}
+                                        </div>
+                                        @if($cliente->rut)
+                                            <small class="d-block text-muted text-nowrap">RUT {{ $cliente->rut }}</small>
+                                        @endif
                                     </td>
                                     <td>
-                                        <div class="fw-semibold text-capitalize">{{$cliente->nombre}}</div>
+                                        @if($telefono = \App\ContactoCliente::telefono($cliente->telefono) ?? \App\ContactoCliente::telefono($cliente->celular))
+                                            <a href="tel:{{ $telefono }}" class="text-primary text-decoration-none">{{ $telefono }}</a>
+                                        @else
+                                            —
+                                        @endif
                                     </td>
                                     <td>
-                                        <p class="text-capitalize">{{$cliente->primer_apellido}}</p>
+                                        @if($correo = \App\ContactoCliente::correo($cliente->correo))
+                                            <a href="mailto:{{ $correo }}">{{ $correo }}</a>
+                                        @else
+                                            —
+                                        @endif
                                     </td>
                                     <td>
-                                        <p class="text-capitalize">{{$cliente->segundo_apellido}}</p>
-                                    </td>
-                                    <td>
-                                        <a href="tel:{{$cliente->telefono}}" class="text-primary text-decoration-none">
-                                            <i class="fa fa-phone me-1 text-primary font-weight-bold"></i> {{$cliente->telefono}}
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-azul text-white">{{$cliente->rol->name}}</span>
+                                        <span class="badge bg-azul text-white">{{ $cliente->rol?->name ?? 'Sin rol' }}</span>
                                     </td>
                                     <td>
                                         <p class="text-capitalize">{{Str::limit($cliente->direccion, 40)}}</p>
                                     </td>
                                     <td>
-                                            <button class="btn btn-icon btn-sucess" title="Ver estado de cuenta" data-bs-toggle="modal" data-bs-target="#modalEstadoCuenta{{$cliente->id}}" onclick="cargarEstadoCuenta({{$cliente->id}}, '{{$cliente->nombre}}')">
+                                            <button class="btn btn-icon btn-sucess" title="Ver estado de cuenta" data-bs-toggle="modal" data-bs-target="#modalEstadoCuenta{{$cliente->id}}" onclick="cargarEstadoCuenta({{$cliente->id}}, @js($cliente->nombre))">
                                                 <i class="fa fa-file-invoice-dollar"></i>
                                             </button>
+                                            <a class="btn btn-outline-primary btn-sm" href="{{ route('clientes.contacto', $cliente) }}">Contactar</a>
                                             <a class="btn  btn-icon btn-warning" href="{{route("clientes.edit",[$cliente])}}" title="Editar cliente">
                                                 <i class="fa fa-edit"></i>
                                             </a>
                                             <form action="{{route("clientes.destroy", [$cliente])}}" method="post" style="display:inline" class="form-eliminar">
                                                 @method("delete")
                                                 @csrf
-                                                <button type="submit" class="btn btn-icon btn-danger" title="Eliminar cliente" onclick="confirmarEliminacionCliente(event, '{{$cliente->nombre}} {{$cliente->primer_apellido}}')">
+                                                <button type="submit" class="btn btn-icon btn-danger" title="Eliminar cliente" onclick="confirmarEliminacionCliente(event, @js(trim($cliente->nombre.' '.($cliente->primer_apellido ?? ''))))">
                                                     <i class="fa fa-trash"></i>
                                                 </button>
                                             </form>
@@ -94,11 +111,11 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center py-5">
+                                    <td colspan="6" class="text-center py-5">
                                         <div style="color: #ccc; margin-bottom: 1rem; font-size: 3rem;">
                                             <i class="fa fa-inbox"></i>
                                         </div>
-                                        <h5 class="text-muted mb-2"> Sin clientes registrados</h5>
+                                        <h5 class="text-muted mb-2">Sin clientes para esta búsqueda</h5>
                                         <p class="text-muted mb-3"> No hay clientes disponibles en este momento.</p>
                                         <a href="{{route("clientes.create")}}" class="btn btn-primary">
                                             <i class="fa fa-plus-circle me-2"></i> Crear Cliente Ahora
@@ -109,6 +126,7 @@
                             </tbody>
                         </table>
                     </div>
+                    {{ $clientes->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
@@ -143,7 +161,7 @@
                     </div>
                     <div class="modal-footer border-top">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                        <button type="button" class="btn btn-primary" onclick="descargarEstadoCuenta({{$cliente->id}}, '{{$cliente->nombre}}')">
+                        <button type="button" class="btn btn-primary" onclick="descargarEstadoCuenta({{$cliente->id}}, @js($cliente->nombre))">
                             <i class="fa fa-download me-2"></i>Descargar PDF
                         </button>
                     </div>
@@ -153,20 +171,6 @@
     @endforeach
 
     <script>
-
-        $(document).ready(function() {
-            $('.table').DataTable({
-                language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-CL.json'
-                },
-                pageLength: 10,
-                lengthMenu: [5, 10, 25, 50, 100],
-                columnDefs: [
-                    { orderable: false, targets: -1 },
-                    { searchable: false, targets: -1 }
-                ]
-            });
-         });
         /**
          * Confirmar eliminación de un cliente usando SweetAlert2
          */
@@ -176,7 +180,7 @@
 
             Swal.fire({
                 title: '¿Eliminar cliente?',
-                html: `<p>¿Está seguro de que desea eliminar a:</p><strong>${nombreCliente}</strong><p><small class="text-danger">Esta acción no se puede deshacer</small></p>`,
+                text: `¿Está seguro de que desea eliminar a ${nombreCliente}? Esta acción no se puede deshacer.`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d33',
@@ -281,7 +285,7 @@
         function descargarEstadoCuenta(clienteId, nombreCliente) {
             Swal.fire({
                 title: '¡Descarga iniciada!',
-                html: `<p>El estado de cuenta de <strong>${nombreCliente}</strong> se está descargando.</p>`,
+                text: `El estado de cuenta de ${nombreCliente} se está descargando.`,
                 icon: 'success',
                 confirmButtonColor: '#667eea',
                 confirmButtonText: 'Aceptar',

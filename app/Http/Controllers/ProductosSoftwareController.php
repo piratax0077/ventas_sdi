@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\ProductoSoftware;
+use App\CatalogoSegmentos;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ProductosSoftwareController extends Controller
 {
@@ -12,10 +14,21 @@ class ProductosSoftwareController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $productosSoftware = ProductoSoftware::all();
+        $productosSoftware = CatalogoSegmentos::filtrar(ProductoSoftware::query(), $request->query('segmento'))->get();
         return view('productos_software.index', ['productosSoftware' => $productosSoftware]);
+    }
+
+    public function catalogo(Request $request)
+    {
+        $consulta = ProductoSoftware::withCount([
+            'planes as planes_disponibles_count' => fn ($planes) => $planes->disponible(),
+        ]);
+        $software = CatalogoSegmentos::filtrar($consulta, $request->query('segmento'))
+            ->orderByDesc('estado')->orderBy('nombre')->orderBy('id')->paginate(24)->withQueryString();
+
+        return view('vender.productos_catalogo', compact('software'));
     }
 
     /**
@@ -36,16 +49,20 @@ class ProductosSoftwareController extends Controller
      */
     public function store(Request $request)
     {
+        $this->normalizarTipos($request);
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:productos_software',
             'descripcion' => 'required|string',
+            'segmento_catalogo' => CatalogoSegmentos::reglas(),
             'versión' => 'nullable|string|max:50',
-            'tipo' => 'required|in:web,desktop,mobile,api,otro',
+            'tipos' => 'required|list|min:1',
+            'tipos.*' => ['required', 'string', 'distinct', Rule::in(array_keys(ProductoSoftware::TIPOS))],
             'url_descarga' => 'nullable|url',
             'estado' => 'nullable|boolean'
         ]);
 
         $validated['estado'] = $request->boolean('estado');
+        $validated['tipo'] = $validated['tipos'][0];
 
         ProductoSoftware::create($validated);
 
@@ -84,16 +101,20 @@ class ProductosSoftwareController extends Controller
      */
     public function update(Request $request, ProductoSoftware $productoSoftware)
     {
+        $this->normalizarTipos($request);
         $validated = $request->validate([
             'nombre' => 'required|string|max:255|unique:productos_software,nombre,' . $productoSoftware->id,
             'descripcion' => 'required|string',
+            'segmento_catalogo' => CatalogoSegmentos::reglas(),
             'versión' => 'nullable|string|max:50',
-            'tipo' => 'required|in:web,desktop,mobile,api,otro',
+            'tipos' => 'required|list|min:1',
+            'tipos.*' => ['required', 'string', 'distinct', Rule::in(array_keys(ProductoSoftware::TIPOS))],
             'url_descarga' => 'nullable|url',
             'estado' => 'nullable|boolean'
         ]);
 
         $validated['estado'] = $request->boolean('estado');
+        $validated['tipo'] = $validated['tipos'][0];
 
         $productoSoftware->update($validated);
 
@@ -113,5 +134,12 @@ class ProductosSoftwareController extends Controller
 
         return redirect()->route('productos-software.index')
             ->with('mensaje', 'Producto software eliminado exitosamente');
+    }
+
+    private function normalizarTipos(Request $request): void
+    {
+        if (!$request->has('tipos')) {
+            $request->merge(['tipos' => $request->has('tipo') ? [$request->input('tipo')] : []]);
+        }
     }
 }

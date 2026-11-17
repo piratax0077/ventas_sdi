@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Producto;
+use App\RegistrarSuscripciones;
 use App\Cliente;
 use App\Venta;
 
@@ -32,34 +32,6 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get('user', 'AuthController@user');
 
         Route::middleware('sales')->group(function () {
-        Route::get("productos", function () {
-            return response()->json(Producto::all());
-        });
-        /*
-            Si existe un dios, que me perdone por dejar todas las peticiones aquí
-            en lugar de separarlas a otro archivo o invocar un controlador
-        */
-        Route::post("/producto", function(Request $request){
-            $producto = new Producto($request->input());
-            $producto->saveOrFail();
-            return response()->json(["data" => "true"]);
-        });
-        Route::get("/producto/{id}", function($id){
-            $producto = Producto::findOrFail($id);
-            return response()->json($producto);
-        });
-        Route::put("/producto", function(Request $request){
-            $producto = Producto::findOrFail($request->input("id"));
-            $producto->fill($request->input());
-            $producto->saveOrFail();
-            return response()->json(true);
-        });
-        Route::delete("/producto/{id}", function($id){
-            $producto = Producto::findOrFail($id);
-            $producto->delete();
-            return response()->json(true);
-        });
-
         // Clientes
         
         Route::get("clientes", function () {
@@ -90,12 +62,15 @@ Route::group(['prefix' => 'auth'], function () {
         Route::get("ventas", function () {
             return response()->json(Venta::with(["productos", "cliente"])->where('id_responsable', auth()->id())->get());
         });
-        Route::post("/venta", function(Request $request){
-            $data = $request->validate(['id_cliente' => 'required|integer|exists:clientes,id']);
-            $venta = new Venta();
-            $venta->id_cliente = $data['id_cliente'];
-            $venta->id_responsable = $request->user()->id;
-            $venta->saveOrFail();
+        Route::post("/venta", function (Request $request, RegistrarSuscripciones $registrar) {
+            $data = $request->validate([
+                'id_cliente' => 'required|integer|exists:clientes,id',
+                'id_plan' => 'required|integer',
+                'cantidad' => 'sometimes|integer|min:1',
+            ]);
+            $registrar->registrar($data['id_cliente'], $request->user()->id, [
+                $data['id_plan'] => $data['cantidad'] ?? 1,
+            ]);
             return response()->json(["data" => "true"]);
         });
         Route::get("/venta/{id}", function($id){

@@ -32,18 +32,38 @@ Route::middleware(['auth', 'sales'])
         Route::put('/perfil', 'UserController@updatePerfil')->name('perfil.update');
 
         Route::resource("clientes", "ClientesController");
-        Route::resource("usuarios", "UserController")->parameters(["usuarios" => "user"]);
-        Route::resource("productos", "ProductosController");
-        Route::resource("mantenimiento", "MantenimientoController")->parameters(["mantenimiento" => "mantenimiento"]);
-        Route::resource("productos-software", "ProductosSoftwareController")->parameters(["productos-software" => "productoSoftware"]);
-        Route::resource("planes", "PlanesController")->parameters(["planes" => "plan"]);
+        Route::get('/clientes/{cliente}/contacto', 'SeguimientosContactoController@show')->name('clientes.contacto');
+        Route::post('/clientes/{cliente}/contacto', 'SeguimientosContactoController@store')->name('clientes.contacto.store');
+        Route::get('/vender/seguimiento', 'SeguimientosContactoController@index')->name('seguimientos.index');
+        Route::patch('/vender/seguimiento/{seguimiento}', 'SeguimientosContactoController@update')->name('seguimientos.update');
+        Route::middleware('can:administrar-catalogo')->group(function () {
+            Route::get('/campanas', 'CampanasController@index')->name('campanas.index');
+            Route::post('/campanas/preparar', 'CampanasController@preparar')->name('campanas.preparar');
+        });
+        Route::middleware('can:administrar-usuarios')->group(function () {
+            Route::resource("usuarios", "UserController")->parameters(["usuarios" => "user"]);
+            Route::resource("configuracion", "ConfiguracionController")->parameters(["configuracion" => "configuracion"]);
+            Route::prefix('administracion')->name('administracion.')->group(function () {
+                Route::resource('videos', 'VideosCapacitacionController')->parameters(['videos' => 'video'])
+                    ->only(['index', 'show', 'edit', 'update', 'destroy']);
+            });
+        });
+        Route::middleware('can:administrar-catalogo')->group(function () {
+            Route::get('/productos', fn () => redirect()->route('productos-software.index'));
+            Route::get('/productos/create', fn () => redirect()->route('productos-software.create'));
+            Route::get('/productos/{producto}/edit', fn () => redirect()->route('productos-software.index'));
+            Route::resource("mantenimiento", "MantenimientoController")->parameters(["mantenimiento" => "mantenimiento"]);
+            Route::resource("productos-software", "ProductosSoftwareController")->parameters(["productos-software" => "productoSoftware"]);
+            Route::resource("planes", "PlanesController")->parameters(["planes" => "plan"]);
+            Route::resource("reportes", "ReportesController")->parameters(["reportes" => "reporte"]);
+        });
         Route::get("/planes-catalogo", "PlanesController@catalogo")->name("planes.catalogo");
-        Route::resource("configuracion","ConfiguracionController")->parameters(["configuracion" => "configuracion"]);
-        Route::resource("reportes", "ReportesController")->parameters(["reportes" => "reporte"]);
+        Route::get("/catalogo-productos", "ProductosSoftwareController@catalogo")->name("productos.catalogo");
         Route::get("/ventas/ticket", "VentasController@ticket")->name("ventas.ticket");
         Route::get("/ventas/ticket-pdf/{id}", "VentasController@ticketPdf")->name("ventas.ticket.pdf");
         Route::resource("ventas", "VentasController")->only(['index', 'show', 'destroy']);
         Route::get("/vender", "VenderController@index")->name("vender.index");
+        Route::get('/vender/videos', 'VideosCapacitacionController@catalogo')->name('vender.videos');
         Route::post("/productoDeVenta", "VenderController@agregarProductoVenta")->name("agregarProductoVenta");
         Route::delete("/productoDeVenta", "VenderController@quitarProductoDeVenta")->name("quitarProductoDeVenta");
         Route::post("/terminarOCancelarVenta", "VenderController@terminarOCancelarVenta")->name("terminarOCancelarVenta");

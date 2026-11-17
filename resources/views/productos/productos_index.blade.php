@@ -26,6 +26,7 @@
             <h1>Productos <i class="fa fa-box"></i></h1>
             <a href="{{route("productos.create")}}" class="btn btn-success mb-2">Agregar</a>
             @include("notificacion")
+            @include('partials.filtro_segmento')
             <div class="table-responsive">
                 <table class="table table-bordered">
                     <thead>
@@ -45,10 +46,19 @@
                     @foreach($productos as $producto)
                         <tr>
                             <td>{{$producto->codigo_barras}}</td>
-                            <td>{{$producto->descripcion}}</td>
+                            <td>
+                                {{$producto->descripcion}}
+                                <small class="d-block text-muted">{{ \App\CatalogoSegmentos::etiqueta($producto->segmento_catalogo) }}</small>
+                            </td>
                             <td>{{$producto->precio_compra}}</td>
-                            <td>{{$producto->precio_venta}}</td>
-                            <td>{{$producto->precio_venta - $producto->precio_compra}}</td>
+                            <td>
+                                @if($producto->precioAplicado() < $producto->precio_venta)
+                                    <del class="text-muted">{{$producto->precio_venta}}</del>
+                                    <span class="badge bg-success">Promoción</span>
+                                @endif
+                                {{ number_format($producto->precioAplicado(), 2) }}
+                            </td>
+                            <td>{{number_format($producto->precioAplicado() - $producto->precio_compra, 2)}}</td>
                             <td>{{$producto->existencia}}</td>
                             <td>
                                 <a class="btn btn-warning" href="{{route("productos.edit",[$producto])}}">

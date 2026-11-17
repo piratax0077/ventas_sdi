@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Plan;
-use App\Cliente;
+use App\CatalogoSegmentos;
+use App\ProductoSoftware;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class PlanesController extends Controller
 {
@@ -13,9 +16,9 @@ class PlanesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $planes = Plan::all();
+        $planes = CatalogoSegmentos::filtrar(Plan::with('productosSoftware'), $request->query('segmento'))->get();
         return view('planes.index', ['planes' => $planes]);
     }
 
@@ -26,7 +29,7 @@ class PlanesController extends Controller
      */
     public function create()
     {
-        return view('planes.planes_create');
+        return view('planes.planes_create', ['software' => ProductoSoftware::orderBy('nombre')->get()]);
     }
 
     /**
@@ -37,30 +40,7 @@ class PlanesController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string',
-            'precio' => 'required|numeric|min:0',
-            'frecuencia' => 'required|in:mensual,trimestral,semestral,anual',
-            'cantidad_usuarios' => 'required|integer|min:1',
-            'cantidad_dispositivos' => 'required|integer|min:1',
-            'features' => 'nullable|string',
-            'estado' => 'nullable|boolean'
-        ]);
-
-        // Convertir features de texto a array
-        if (!empty($validated['features'])) {
-            $validated['features'] = array_filter(
-                array_map('trim', explode("\n", $validated['features']))
-            );
-        } else {
-            $validated['features'] = [];
-        }
-
-        // Establecer estado por defecto
-        $validated['estado'] = $request->boolean('estado');
-
-        Plan::create($validated);
+        $this->guardarPlan($request, new Plan());
 
         return redirect()->route('planes.index')
             ->with('mensaje', 'Plan creado exitosamente');
@@ -85,7 +65,10 @@ class PlanesController extends Controller
      */
     public function edit(Plan $plan)
     {
-        return view('planes.planes_edit', ['plan' => $plan]);
+        return view('planes.planes_edit', [
+            'plan' => $plan,
+            'software' => ProductoSoftware::orderBy('nombre')->get(),
+        ]);
     }
 
     /**
@@ -97,33 +80,39 @@ class PlanesController extends Controller
      */
     public function update(Request $request, Plan $plan)
     {
+        $this->guardarPlan($request, $plan);
+
+        return redirect()->route('planes.index')
+            ->with('mensaje', 'Plan actualizado exitosamente');
+    }
+
+    private function guardarPlan(Request $request, Plan $plan): void
+    {
         $validated = $request->validate([
             'nombre' => 'required|string|max:255',
+            'nivel' => ['nullable', Rule::in(array_keys(Plan::NIVELES))],
             'descripcion' => 'required|string',
-            'precio' => 'required|numeric|min:0',
-            'frecuencia' => 'required|in:mensual,trimestral,semestral,anual',
+            'precio' => 'required|numeric|decimal:0,2|min:0|max:9999999.99',
+            'precio_promocional' => 'nullable|numeric|decimal:0,2|min:0|lt:precio',
+            'segmento_catalogo' => CatalogoSegmentos::reglas(),
+            'frecuencia' => ['required', Rule::in(Plan::FRECUENCIAS)],
+            'software_ids' => 'required|array|min:1',
+            'software_ids.*' => 'required|integer|distinct|exists:productos_software,id',
             'cantidad_usuarios' => 'required|integer|min:1',
             'cantidad_dispositivos' => 'required|integer|min:1',
             'features' => 'nullable|string',
             'estado' => 'nullable|boolean'
         ]);
 
-        // Convertir features de texto a array
-        if (!empty($validated['features'])) {
-            $validated['features'] = array_filter(
-                array_map('trim', explode("\n", $validated['features']))
-            );
-        } else {
-            $validated['features'] = [];
-        }
-
-        // Establecer estado
+        $softwareIds = $validated['software_ids'];
+        unset($validated['software_ids']);
+        $validated['features'] = array_values(array_filter(array_map('trim', explode("\n", $validated['features'] ?? ''))));
         $validated['estado'] = $request->boolean('estado');
 
-        $plan->update($validated);
-
-        return redirect()->route('planes.index')
-            ->with('mensaje', 'Plan actualizado exitosamente');
+        DB::transaction(function () use ($plan, $validated, $softwareIds) {
+            $plan->fill($validated)->saveOrFail();
+            $plan->productosSoftware()->sync($softwareIds);
+        });
     }
 
     /**
@@ -144,10 +133,23 @@ class PlanesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function catalogo()
+    public function catalogo(Request $request)
     {
-        $planes = Plan::where('estado', 1)->get();
-        $clientes = Cliente::orderBy('nombre')->get();
-        return view('vender.planes_catalogo', compact('planes', 'clientes'));
+        $consulta = CatalogoSegmentos::filtrar(Plan::disponible()->with('productosSoftware'), $request->query('segmento'));
+        $productoSeleccionado = null;
+        if ($request->filled('software_id')) {
+            $productoSeleccionado = ProductoSoftware::where('estado', true)->findOrFail($request->integer('software_id'));
+            $consulta->whereHas('productosSoftware', fn ($software) => $software->whereKey($productoSeleccionado->id));
+        }
+        $frecuencia = $request->query('frecuencia');
+        if (in_array($frecuencia, Plan::FRECUENCIAS, true)) {
+            $consulta->where('frecuencia', $frecuencia);
+        }
+        $nivel = $request->query('nivel');
+        if (is_string($nivel) && isset(Plan::NIVELES[$nivel])) {
+            $consulta->where('nivel', $nivel);
+        }
+        $planes = $consulta->orderBy('nombre')->get();
+        return view('vender.planes_catalogo', compact('planes', 'productoSeleccionado'));
     }
 }

@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Cliente extends Model
 {
@@ -59,6 +60,18 @@ class Cliente extends Model
     ];
 
     protected $casts = ['fecha_nacimiento' => 'datetime'];
+
+    public function scopeBuscarContacto(Builder $consulta, string $busqueda): Builder
+    {
+        if ($busqueda === '') {
+            return $consulta;
+        }
+        return $consulta->where(function (Builder $clientes) use ($busqueda) {
+            foreach (['nombre', 'primer_apellido', 'segundo_apellido', 'rut', 'correo', 'telefono', 'celular'] as $campo) {
+                $clientes->orWhere($campo, 'like', '%'.$busqueda.'%');
+            }
+        });
+    }
 
     // Relaciones
     public function rol()

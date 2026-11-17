@@ -24,6 +24,7 @@
 namespace App\Http\Controllers;
 
 use App\Producto;
+use App\CatalogoSegmentos;
 use Illuminate\Http\Request;
 
 class ProductosController extends Controller
@@ -33,9 +34,10 @@ class ProductosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view("productos.productos_index", ["productos" => Producto::all()]);
+        $productos = CatalogoSegmentos::filtrar(Producto::query(), $request->query('segmento'))->get();
+        return view("productos.productos_index", compact('productos'));
     }
 
     /**
@@ -117,6 +119,8 @@ class ProductosController extends Controller
             'descripcion' => 'required|string|max:255',
             'precio_compra' => 'required|numeric|min:0|max:9999999999.99',
             'precio_venta' => 'required|numeric|min:0|max:9999999999.99',
+            'precio_promocional' => 'nullable|numeric|decimal:0,2|min:0|lt:precio_venta',
+            'segmento_catalogo' => CatalogoSegmentos::reglas(),
             'existencia' => 'required|numeric|min:0|max:9999999999.99',
         ];
     }

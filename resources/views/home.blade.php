@@ -26,83 +26,6 @@
     </h6>
 
     @php
-        $medDemos = [
-            [
-                'label' => 'Profesionales', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 
-                'Instituciones', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'Laboratorios', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'App', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'Paciente', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'FMU', 
-                'route' => 'mantenimiento.index'
-            ],
-            [
-                'label' => 'S. Urgencia', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'Crónicos', 
-                'route' => 'planes.index'
-            ],
-        ];
-    @endphp
-
-
-    @php
-        $vetDemos = [
-            [
-                'label' => 'Profesionales', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 
-                'Instituciones', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'Laboratorios', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'App', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'Mascotas', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'FVU', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'S. Urgencia', 
-                'route' => 'planes.index'
-            ],
-            [
-                'label' => 'Crónicos', 
-                'route' => 'planes.index'
-            ],
-        ];
-    @endphp
-
-    @php
 
 
         $modulos = [
@@ -115,28 +38,30 @@
                 'desc'  => 'Base de datos de clientes',
             ],
             [
-                'label' => 'Productos',
+                'label' => 'Software',
                 'route' => 'productos-software.index',
+                'ability' => 'administrar-catalogo',
                 'icon'  => 'fa-box-open',
                 'color' => 'primary',
                 'img'   => 'productos.png',
-                'desc'  => 'Gestión de productos físicos',
+                'desc'  => 'Gestión del catálogo de software',
             ],
             [
                 'label' => 'Planes',
                 'route' => 'planes.index',
+                'ability' => 'administrar-catalogo',
                 'icon'  => 'fa-layer-group',
                 'color' => 'primary',
                 'img'   => 'membresia.png',
                 'desc'  => 'Membresías y planes de servicio',
             ],
              [
-                'label' => 'Vender',
+                'label' => 'Registrar suscripción',
                 'route' => 'vender.index',
                 'icon'  => 'fa-cash-register',
                 'color' => 'warning',
                 'img'   => 'vender.png',
-                'desc'  => 'Punto de venta rápido',
+                'desc'  => 'Registrar un plan para un cliente',
             ],
             [
                 'label' => 'Ventas',
@@ -150,6 +75,7 @@
             [
                 'label' => 'Reportes',
                 'route' => 'reportes.index',
+                'ability' => 'administrar-catalogo',
                 'icon'  => 'fa-chart-bar',
                 'color' => 'danger',
                 'img'   => 'reportes.png',
@@ -158,6 +84,7 @@
             [
                 'label' => 'Mantenimiento',
                 'route' => 'mantenimiento.index',
+                'ability' => 'administrar-catalogo',
                 'icon'  => 'fa-screwdriver-wrench',
                 'color' => 'secondary',
                 'img'   => 'mantencion.png',
@@ -166,6 +93,7 @@
             [
                 'label' => 'Configuración',
                 'route' => 'configuracion.index',
+                'ability' => 'administrar-usuarios',
                 'icon'  => 'fa-sliders',
                 'color' => 'dark',
                 'img'   => 'ajustes.png',
@@ -174,49 +102,20 @@
         ];
     @endphp
 
-   <div class="row g-4">
-    @foreach($modulos as $index => $m)
-
-        {{-- INSERTAR BLOQUES DESPUÉS DE LA 4TA CARD --}}
-        @if($index == 4)
-
-            {{-- DEMOS MED-SDI --}}
-            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 mb-4">
-                <div class="demo-box demo-blue text-white p-3  shadow-sm">
-                    <h5 class="fw-bold text-center mb-3">DEMOS MED-SDI</h5>
-
-                    <div class="row g-3">
-    @foreach($medDemos as $item)
-        <div class="col-6 col-md-3">
-            <a href="{{ route($item['route']) }}" class="btn demo-btn w-100">
-                {{ $item['label'] }}
-            </a>
+    <section class="mb-4">
+        <h2 class="h5">Catálogos por línea</h2>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach(\App\CatalogoSegmentos::LINEAS as $linea => [$nombreLinea, $publicos])
+                <a class="btn btn-outline-primary" href="{{ route('productos.catalogo', ['segmento' => count($publicos) === 1 ? $linea.'.'.array_key_first($publicos) : $linea]) }}">
+                    {{ $nombreLinea }}
+                </a>
+            @endforeach
         </div>
-    @endforeach
-</div>
-                </div>
-            </div>
+    </section>
 
-            {{-- DEMOS VET-SDI --}}
-            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 mb-4">
-                <div class="demo-box demo-purple text-white p-3  shadow-sm">
-                    <h5 class="fw-bold text-center mb-3">DEMOS VET-SDI</h5>
-
-                    <div class="row g-3">
-    @foreach($vetDemos as $item)
-        <div class="col-6 col-md-3">
-            <a href="{{ route($item['route']) }}" class="btn demo-btn w-100">
-                {{ $item['label'] }}
-            </a>
-        </div>
-    @endforeach
-</div>
-                </div>
-            </div>
-
-        @endif
-
-        {{-- TUS CARDS (NO SE TOCAN) --}}
+    <div class="row g-4">
+    @foreach($modulos as $m)
+        @continue(isset($m['ability']) && Gate::denies($m['ability']))
         <div class="col-12 col-sm-6 col-lg-3 mb-4">
             <a href="{{ route($m['route']) }}" class="text-decoration-none">
                 <div class="card border-0 shadow-sm h-100 module-card text-center p-4">
@@ -259,36 +158,5 @@
         width: 30%!important;
     }
 
-    .demo-box {
-    box-shadow: 0 4px 12px rgba(0,0,0,.08);
-    border-radius: 0.85rem !important;
-}
-
-.demo-blue {
-    background: #6d92d1;
-}
-
-.demo-purple {
-    background: #ba98c8;
-}
-
-.demo-btn {
-    background: rgba(255,255,255,0.15);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    padding: 10px;
-    transition: all .2s ease;
-    font-size:0.9rem;
-    margin-bottom: 7px;
-}
-
-.demo-btn:hover {
-    background: rgba(255,255,255,0.30);
-    transform: translateY(-2px);
-    color: #fff;
-
-}
 </style>
 @endpush

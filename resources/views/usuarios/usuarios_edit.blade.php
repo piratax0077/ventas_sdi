@@ -44,6 +44,7 @@ ____          _____               _ _           _
                            type="password" placeholder="Dejar vacía para conservar la contraseña">
                 </div>
 
+                @include('usuarios.rol', ['rolActual' => $usuario->hasRole(\App\Models\User::SUBADMIN_ROLE, 'web') ? \App\Models\User::SUBADMIN_ROLE : \App\Models\User::SELLER_ROLE])
                 @include("notificacion")
                 <button class="btn btn-success">Guardar</button>
                 <a class="btn btn-primary" href="{{route("usuarios.index")}}">Volver</a>

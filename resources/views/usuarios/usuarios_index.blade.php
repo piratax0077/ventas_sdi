@@ -32,6 +32,7 @@ ____          _____               _ _           _
                     <tr>
                         <th>Correo electrónico</th>
                         <th>Nombre</th>
+                        <th>Rol</th>
                         <th>Editar</th>
                         <th>Eliminar</th>
                     </tr>
@@ -41,12 +42,16 @@ ____          _____               _ _           _
                         <tr>
                             <td>{{$usuario->email}}</td>
                             <td>{{$usuario->name}}</td>
+                            <td>{{ $usuario->isSalesAdministrator() ? 'Administrador' : ($usuario->getRoleNames()->join(', ') ?: 'Sin rol') }}</td>
                             <td>
+                                @unless($usuario->isSalesAdministrator())
                                 <a class="btn btn-warning" href="{{route("usuarios.edit",[$usuario])}}">
                                     <i class="fa fa-edit"></i>
                                 </a>
+                                @endunless
                             </td>
                             <td>
+                                @unless($usuario->isSalesAdministrator())
                                 <form action="{{route("usuarios.destroy", [$usuario])}}" method="post">
                                     @method("delete")
                                     @csrf
@@ -54,6 +59,7 @@ ____          _____               _ _           _
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </form>
+                                @endunless
                             </td>
                         </tr>
                     @endforeach

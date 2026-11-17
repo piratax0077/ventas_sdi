@@ -92,9 +92,10 @@
                             </a>
                         </li>
 
+                        @can('administrar-catalogo')
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("productos-software.index")}}">
-                                Productos
+                                Software
                             </a>
                         </li>
 
@@ -103,9 +104,15 @@
                                 Planes
                             </a>
                         </li>
+                        @endcan
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("vender.index")}}">
-                                Vender
+                                Registrar suscripción
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('vender.videos') }}">
+                                Videos para vendedores
                             </a>
                         </li>
                           <li class="nav-item">
@@ -114,14 +121,32 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-white" href="{{route("productos.catalogo")}}">
+                                Catálogo de software
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("planes.catalogo")}}">
-                                Catálogo de planes
+                                Planes de suscripción
                             </a>
                         </li>
                         
+                        @can('administrar-catalogo')
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("mantenimiento.index")}}">
                                 Mantenimiento
+                            </a>
+                        </li>
+                        @endcan
+                        @can('administrar-usuarios')
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{ route('administracion.videos.index') }}">
+                                Administración · Videos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="{{route("usuarios.index")}}">
+                                Usuarios
                             </a>
                         </li>
                         <li class="nav-item">
@@ -129,6 +154,7 @@
                                 Configuración
                             </a>
                         </li>
+                        @endcan
                       
                       
 

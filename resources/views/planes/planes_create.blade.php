@@ -57,6 +57,10 @@
                         </div>
 
                         <!-- Precio y Frecuencia -->
+                        @include('planes.software')
+                        @include('planes.nivel')
+                        @include('partials.segmento_catalogo')
+                        @include('partials.precio_promocional')
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -79,8 +83,6 @@
                                         id="frecuencia" name="frecuencia" required>
                                         <option value="">-- Seleccionar --</option>
                                         <option value="mensual" {{old('frecuencia') == 'mensual' ? 'selected' : ''}}>Mensual</option>
-                                        <option value="trimestral" {{old('frecuencia') == 'trimestral' ? 'selected' : ''}}>Trimestral</option>
-                                        <option value="semestral" {{old('frecuencia') == 'semestral' ? 'selected' : ''}}>Semestral</option>
                                         <option value="anual" {{old('frecuencia') == 'anual' ? 'selected' : ''}}>Anual</option>
                                     </select>
                                     @error('frecuencia')
@@ -155,7 +157,7 @@
 
                 <!-- Botones de Acción -->
                 <div class="mt-4 mb-4">
-                    <button type="submit" class="btn btn-primary btn-lg">
+                    <button type="submit" class="btn btn-primary btn-lg" @disabled($software->isEmpty())>
                         <i class="fa fa-save"></i> Guardar Plan
                     </button>
                     <a href="{{route("planes.index")}}" class="btn btn-secondary btn-lg">
