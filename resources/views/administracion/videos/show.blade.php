@@ -8,5 +8,5 @@
         @include('administracion.videos.reproductor')
     </div>
     <a class="btn btn-catalogo-accion" href="{{ route('administracion.videos.edit', $video) }}">Editar video</a>
-    <a class="btn btn-outline-secondary" href="{{ route('administracion.videos.index') }}">Volver a videos</a>
+    <a class="btn btn-outline-secondary" href="{{ route('administracion.videos.index', ['linea' => $video->linea]) }}">Volver a videos</a>
 @endsection

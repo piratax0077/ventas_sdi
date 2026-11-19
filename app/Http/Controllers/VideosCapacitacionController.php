@@ -12,14 +12,23 @@ use Throwable;
 
 class VideosCapacitacionController extends Controller
 {
-    public function catalogo()
+    public function catalogo(Request $request)
     {
-        return view('vender.videos', ['videos' => VideoCapacitacion::orderBy('id')->get()]);
+        $linea = $this->lineaSeleccionada($request);
+        $videos = VideoCapacitacion::where('linea', $linea)->orderBy('orden')->orderBy('id')->get();
+        return view('vender.videos', compact('videos', 'linea'));
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('administracion.videos.index', ['videos' => VideoCapacitacion::orderBy('id')->paginate(20)]);
+        $linea = $this->lineaSeleccionada($request);
+        $videos = VideoCapacitacion::where('linea', $linea)->orderBy('orden')->orderBy('id')->paginate(20)->withQueryString();
+        return view('administracion.videos.index', compact('videos', 'linea'));
+    }
+
+    private function lineaSeleccionada(Request $request): string
+    {
+        return $request->query('linea') === 'veterchile' ? 'veterchile' : 'medichile';
     }
 
     public function show(VideoCapacitacion $video)
@@ -98,7 +107,8 @@ class VideosCapacitacionController extends Controller
         });
         $this->borrarCargas($eliminados);
 
-        return redirect()->route('administracion.videos.index')->with('mensaje', 'Video retirado de la capacitación.');
+        return redirect()->route('administracion.videos.index', $video->linea === 'veterchile' ? ['linea' => 'veterchile'] : [])
+            ->with('mensaje', 'Video retirado de la capacitación.');
     }
 
     private function borrarCargas(array $archivos): void

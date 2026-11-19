@@ -3,6 +3,7 @@
 @section('contenido')
     <h1 class="h3 mb-3">Administración de videos</h1>
     @include('notificacion')
+    @include('partials.pestanas_capacitacion', ['rutaPestanas' => 'administracion.videos.index'])
     <div class="table-responsive">
         <table class="table table-hover">
             <thead><tr><th>Video</th><th>Acciones</th></tr></thead>
@@ -33,5 +34,5 @@
         </table>
     </div>
     {{ $videos->links('pagination::bootstrap-5') }}
-    <a class="btn btn-outline-secondary" href="{{ route('vender.videos') }}">Ver sección de vendedores</a>
+    <a class="btn btn-outline-secondary" href="{{ route('vender.videos', ['linea' => $linea]) }}">Ver sección de vendedores</a>
 @endsection

@@ -2,7 +2,29 @@
 @section('titulo', 'Videos para vendedores')
 @section('contenido')
     @php
-        $practica = [
+        $practica = $linea === 'veterchile' ? [
+            [
+                'pregunta' => '¿Qué le mostrarías primero a una tutora que tiene los exámenes de su mascota repartidos?',
+                'opciones' => [
+                    ['Cómo consultar los documentos disponibles en la Ficha Veterinaria Única.', 'Parte por su necesidad y muestra un ejemplo con datos ficticios.', true],
+                    ['Le asegurarías que todos sus exámenes históricos ya están cargados.', 'Confirma qué documentos están disponibles en su cuenta.', false],
+                ],
+            ],
+            [
+                'pregunta' => '¿Cómo demostrarías la reserva de una hora?',
+                'opciones' => [
+                    ['Confirmarías una hora inmediata sin revisar el calendario.', 'La reserva depende de las horas y servicios disponibles.', false],
+                    ['Buscarías una atención, revisarías la disponibilidad y mostrarías cómo reservar.', 'Así explicas el proceso sin prometer una hora determinada.', true],
+                ],
+            ],
+            [
+                'pregunta' => '¿Qué debes confirmar antes de ofrecer una suscripción?',
+                'opciones' => [
+                    ['Las prestaciones incluidas, el precio y el ciclo de cobro.', 'Así la tutora puede evaluar el plan con información concreta.', true],
+                    ['Que todos los planes incluyen las mismas funciones.', 'Las prestaciones pueden variar. Consulta el catálogo vigente.', false],
+                ],
+            ],
+        ] : [
             [
                 'pregunta' => '¿Cómo iniciarías la conversación?',
                 'opciones' => [
@@ -47,6 +69,7 @@
     @endphp
 
     <h1 class="h3 mb-3">Videos para vendedores</h1>
+    @include('partials.pestanas_capacitacion', ['rutaPestanas' => 'vender.videos'])
     <a class="btn btn-outline-primary mb-3" href="#practica-fmu">Ir a la práctica de venta</a>
     <div class="row">
         @forelse($videos as $video)
@@ -58,6 +81,12 @@
                             <p class="text-muted">{{ $video->descripcion }}</p>
                         @endif
                         <div class="mt-auto">@include('administracion.videos.reproductor')</div>
+                        @if($explicacion = $video->explicacion())
+                            @include('vender.explicacion_video')
+                        @endif
+                        @if($demostracion = $video->demostracion())
+                            @include('vender.demostracion_video')
+                        @endif
                     </div>
                 </section>
             </div>
@@ -68,7 +97,11 @@
 
     <section class="card card-body" id="practica-fmu" aria-labelledby="titulo-practica-fmu">
         <h2 class="h5" id="titulo-practica-fmu">Práctica de venta · Caso ficticio</h2>
-        <p>Camila tiene un próximo control y guarda sus recetas y documentos en distintos lugares. Quiere saber para qué le serviría suscribirse y si podrá usar la ficha en sus próximos controles.</p>
+        @if($linea === 'veterchile')
+            <p>Sofía cuida de su perro Bruno y guarda sus exámenes y recetas en distintos lugares. Quiere organizar sus documentos y reservar el próximo control veterinario.</p>
+        @else
+            <p>Camila tiene un próximo control y guarda sus recetas y documentos en distintos lugares. Quiere saber para qué le serviría suscribirse y si podrá usar la ficha en sus próximos controles.</p>
+        @endif
         <form id="prueba-fmu">
             @foreach($practica as $numero => $paso)
                 <fieldset class="border rounded p-3 mb-3">
@@ -94,6 +127,7 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('js/demostraciones-videos.js') }}" defer></script>
 <script>
     (() => {
         const formulario = document.getElementById('prueba-fmu');
