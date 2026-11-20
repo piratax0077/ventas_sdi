@@ -124,10 +124,30 @@
                              aria-labelledby="titulo-video-{{ $video->id }}" @unless($loop->first) hidden @endunless>
                         <div class="card-body d-flex flex-column">
                             <h2 id="titulo-video-{{ $video->id }}" class="h5 video-card-titulo">{{ $video->titulo }}</h2>
+                            {{-- La descripción puede tener varios párrafos (separados por una línea en blanco).
+                                 Si un párrafo parte con "Etiqueta: …", la etiqueta se destaca. --}}
                             @if($video->descripcion)
-                                <p class="video-card-descripcion">{{ $video->descripcion }}</p>
+                                <div class="video-card-descripcion">
+                                    @foreach(preg_split('/\R{2,}/', trim($video->descripcion)) as $parrafo)
+                                        @if(preg_match('/^([^:.]{3,30}):\s+(.+)$/su', $parrafo, $partes) && !$loop->first)
+                                            <p><strong>{{ $partes[1] }}:</strong> {{ $partes[2] }}</p>
+                                        @else
+                                            <p>{{ $parrafo }}</p>
+                                        @endif
+                                    @endforeach
+                                </div>
                             @endif
-                            <div>@include('administracion.videos.reproductor')</div>
+                            {{-- Si el archivo aún no existe (ej. Medichile para Pacientes), se avisa en vez de mostrar un reproductor vacío --}}
+                            @if(is_file(public_path($video->video)))
+                                <div>@include('administracion.videos.reproductor')</div>
+                            @else
+                                <div class="border rounded">
+                                    @include('partials.estado_vacio', [
+                                        'titulo' => 'Video en preparación',
+                                        'mensaje' => 'Cuando el video esté listo, aparecerá aquí.',
+                                    ])
+                                </div>
+                            @endif
                             @php
                                 $explicacion = $video->explicacion();
                                 $demostracion = $video->demostracion();

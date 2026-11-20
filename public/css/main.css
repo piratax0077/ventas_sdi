@@ -1393,3 +1393,84 @@ textarea.form-control {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: none; }
 }
+/* Acordeón · formato extendido (número, etiquetas, lista de ventajas y frase de inicio) */
+.ventajas-acordeon__nombre { display: inline-flex; align-items: center; gap: .6rem; }
+.ventajas-acordeon__numero {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  background: var(--sdi-blue-soft);
+  color: var(--sdi-blue);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.ventajas-acordeon__item[open] .ventajas-acordeon__numero { background: var(--sdi-blue); color: #fff; }
+.seccion-videos .ventajas-acordeon__etiqueta {
+  margin: 1rem 0 .25rem;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: var(--sdi-blue);
+}
+.ventajas-acordeon__contenido > .ventajas-acordeon__etiqueta:first-child { margin-top: 0; }
+.ventajas-acordeon__ventaja + .ventajas-acordeon__etiqueta { margin-top: 1rem; }
+.ventajas-acordeon__lista { margin: .25rem 0 0; padding-left: 1.1rem; }
+.ventajas-acordeon__lista li { margin-bottom: .25rem; }
+.ventajas-acordeon__lista li:last-child { margin-bottom: 0; }
+.ventajas-acordeon__cita {
+  margin: 0;
+  padding: .6rem .9rem;
+  border: 1px dashed var(--sdi-border);
+  border-radius: var(--sdi-radius);
+  font-size: .95rem;
+  font-style: italic;
+  color: var(--sdi-text);
+}
+/* Acordeón · nota "Importante" (advertencia para el vendedor) */
+.ventajas-acordeon__importante {
+  display: flex;
+  gap: .6rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+  padding: .75rem .9rem;
+  border: 1px solid #f3d38a;
+  border-radius: var(--sdi-radius);
+  background: #fff8e6;
+  color: #6b4e00;
+}
+.ventajas-acordeon__importante .bi { color: #b7791f; line-height: 1.5; }
+.seccion-videos .ventajas-acordeon__importante strong { display: inline; font-size: inherit; color: #6b4e00; }
+/* Acordeón · frases y argumentos por público (Al centro, Al profesional, A la asistente) */
+.ventajas-acordeon__publicos { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+.ventajas-acordeon__publico {
+  display: inline-block;
+  margin-bottom: .3rem;
+  padding: .1rem .55rem;
+  border-radius: 999px;
+  background: var(--sdi-blue-soft);
+  color: var(--sdi-blue);
+  font-size: .78rem;
+  font-weight: 700;
+}
+/* Acordeón · título de grupo (ej. "Veterfood para el tutor") y lista dentro de "De qué trata" */
+.seccion-videos .ventajas-acordeon__grupo {
+  margin: .75rem 0 0;
+  font-size: .95rem;
+  font-weight: 700;
+  color: var(--sdi-blue);
+}
+.seccion-videos .ventajas-acordeon__grupo:first-child { margin-top: 0; }
+.ventajas-acordeon__lista--trata { margin: -.5rem 0 .75rem; color: #5a6475; }
+/* Descripción del video en varios párrafos (ej. Veterfood: "Idea clave", "Lo que une a ambos") */
+.video-card .video-card-descripcion p { margin-bottom: .5rem; }
+.video-card .video-card-descripcion p:last-child { margin-bottom: 0; }
+.seccion-videos .video-card-descripcion strong { font-size: inherit; color: var(--sdi-blue); }
+/* Acordeón · viñetas en las listas de ventajas (el reset global "ul, li" las quita) */
+.ventajas-acordeon__lista { padding-left: 1.25rem; }
+.ventajas-acordeon__lista li { list-style-type: disc; }
+.ventajas-acordeon__lista li::marker { color: var(--sdi-blue); }
