@@ -2,123 +2,6 @@
 @section("titulo", "Agregar cliente")
 @section("contenido")
 
-<style>
-    /* ── Wizard card ── */
-    .wizard-card {
-        max-width: 700px;
-        margin: 0 auto;
-        border-radius: .5rem;
-        box-shadow: 0 4px 18px rgba(0,0,0,.12);
-    }
-    .wizard-card .card-top {
-        background: #343a40;
-        color: #fff;
-        padding: 1.1rem 1.5rem .8rem;
-        border-radius: .5rem .5rem 0 0;
-        text-align: center;
-    }
-    .wizard-card .card-top h5 { margin-bottom: .2rem; font-size: 1.15rem; }
-    .wizard-card .card-top p  { margin: 0; font-size: .85rem; opacity: .8; }
-
-    /* ── Progress bar ── */
-    .wizard-progress { border-radius: 0; height: 8px; }
-    .wizard-progress .progress-bar { transition: width .4s ease; background-color: #28a745; }
-
-    /* ── Step indicators ── */
-    .wizard-steps {
-        display: flex;
-        justify-content: center;
-        gap: 2.5rem;
-        padding: .65rem 0 .3rem;
-        border-bottom: 1px solid #e9ecef;
-        margin-bottom: 1.2rem;
-    }
-    .wizard-steps .step-btn {
-        background: none;
-        border: none;
-        font-size: .82rem;
-        color: #adb5bd;
-        cursor: default;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 3px;
-    }
-    .wizard-steps .step-btn .step-circle {
-        width: 28px; height: 28px;
-        border-radius: 50%;
-        background: #dee2e6;
-        color: #6c757d;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 600; font-size: .78rem;
-        transition: background .3s, color .3s;
-    }
-    .wizard-steps .step-btn.active .step-circle { background: #343a40; color: #fff; }
-    .wizard-steps .step-btn.done   .step-circle { background: #28a745; color: #fff; }
-    .wizard-steps .step-btn.active span:last-child,
-    .wizard-steps .step-btn.done   span:last-child { color: #343a40; font-weight: 600; }
-
-    /* ── Tab panes ── */
-    .wizard-pane { display: none; }
-    .wizard-pane.active { display: block; }
-
-    /* ── Tarjetas de rol ── */
-    .role-cards {
-        display: flex;
-        gap: 1.5rem;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin: 1rem 0 1.5rem;
-    }
-    .role-card {
-        width: 180px;
-        flex: 0 0 180px;
-        border: 2px solid #dee2e6;
-        border-radius: .5rem;
-        padding: 1.4rem 1rem;
-        text-align: center;
-        cursor: pointer;
-        transition: border-color .2s, box-shadow .2s;
-        user-select: none;
-    }
-    .role-card:hover { border-color: #adb5bd; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
-    .role-card.selected { border-color: #343a40; box-shadow: 0 2px 12px rgba(0,0,0,.15); background: #f8f9fa; }
-    .role-card.advancing { border-color: #28a745; box-shadow: 0 2px 14px rgba(40,167,69,.3); background: #f0fff4; }
-
-    /* ── Rol seleccionado (badge) ── */
-    .selected-role-badge {
-        background: #e8f5e9;
-        border-left: 4px solid #28a745;
-        padding: .5rem .8rem;
-        margin: 1rem 0 1rem;
-        font-size: .85rem;
-        border-radius: .25rem;
-        display: none;
-    }
-    .selected-role-badge.visible { display: block; }
-    .selected-role-badge strong { color: #28a745; }
-    .role-card .role-icon { font-size: 2rem; margin-bottom: .5rem; }
-    .role-card .role-label { font-weight: 600; font-size: .9rem; color: #343a40; }
-    .role-card .role-desc  { font-size: .75rem; color: #6c757d; margin-top: .2rem; }
-    .role-error { color: #dc3545; font-size: .8rem; text-align: center; display: none; margin-top: -.5rem; margin-bottom: .5rem; }
-
-    /* ── Nav buttons ── */
-    .wizard-nav {
-        display: flex;
-        justify-content: flex-end;
-        gap: .5rem;
-        margin-top: 1.4rem;
-    }
-
-    /* ── Field labels ── */
-    .floating-label { font-size: .83rem; font-weight: 500; color: #495057; margin-bottom: .25rem; }
-
-    /* ── Validation ── */
-    .is-invalid-field { border-color: #dc3545 !important; }
-    .field-error { color: #dc3545; font-size: .75rem; margin-top: .2rem; display: none; }
-</style>
-
 <div class="wizard-card card border-0">
 
     {{-- Cabecera --}}
@@ -262,13 +145,13 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="rut">Rut</label>
+                        <label class="floating-label" for="rut"><strong>Rut</strong></label>
                         <input type="text" class="form-control form-control-sm" name="rut" id="rut"
                                autocomplete="off" placeholder="12345678-9" oninput="formatoRut(this)" value="{{ old('rut') }}">
                         <div class="field-error" id="err_rut">Ingrese el RUT</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="nombre">Nombre</label>
+                        <label class="floating-label" for="nombre"><strong>Nombre</strong></label>
                         <input type="text" class="form-control form-control-sm" name="nombre" id="nombre"
                                autocomplete="off" value="{{ old('nombre') }}">
                         <div class="field-error" id="err_nombre">Ingrese el nombre</div>
@@ -277,13 +160,13 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="primer_apellido">Primer apellido</label>
+                        <label class="floating-label" for="primer_apellido"><strong>Primer apellido</strong></label>
                         <input type="text" class="form-control form-control-sm" name="primer_apellido"
                                id="primer_apellido" autocomplete="off" value="{{ old('primer_apellido') }}">
                         <div class="field-error" id="err_primer_apellido">Ingrese el primer apellido</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="segundo_apellido">Segundo apellido</label>
+                        <label class="floating-label" for="segundo_apellido"><strong>Segundo apellido</strong></label>
                         <input type="text" class="form-control form-control-sm" name="segundo_apellido"
                                id="segundo_apellido" autocomplete="off" value="{{ old('segundo_apellido') }}">
                         <div class="field-error" id="err_segundo_apellido">Ingrese el segundo apellido</div>
@@ -292,13 +175,13 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-4">
-                        <label class="floating-label" for="fecha_nacimiento">Nacimiento</label>
+                        <label class="floating-label" for="fecha_nacimiento"><strong>Nacimiento</strong></label>
                         <input type="date" class="form-control form-control-sm" name="fecha_nacimiento"
                                id="fecha_nacimiento" value="{{ old('fecha_nacimiento') }}">
                         <div class="field-error" id="err_fecha">Ingrese la fecha de nacimiento</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-4">
-                        <label class="floating-label" for="sexo">Sexo</label>
+                        <label class="floating-label" for="sexo"><strong>Sexo</strong></label>
                         <select class="form-control form-control-sm" name="sexo" id="sexo">
                             <option value="">Seleccione</option>
                             <option value="M" {{ old('sexo') === 'M' ? 'selected' : '' }}>Hombre</option>
@@ -307,7 +190,7 @@
                         <div class="field-error" id="err_sexo">Seleccione el sexo</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-4 paciente-only" id="col_prevision" style="display:none">
-                        <label class="floating-label" for="prevision_id">Previsión</label>
+                        <label class="floating-label" for="prevision_id"><strong>Previsión</strong></label>
                         <select class="form-control form-control-sm" name="prevision_id" id="prevision_id">
                             <option value="">Seleccione</option>
                             @foreach($previsiones as $prevision)
@@ -324,7 +207,7 @@
                 {{-- Campos exclusivos del profesional --}}
                 <div class="form-row profesional-only" id="row_profesion" style="display:none">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="profesion">Profesión</label>
+                        <label class="floating-label" for="profesion"><strong>Profesión</strong></label>
                         <select class="form-control form-control-sm" name="profesion" id="profesion"
                                 onchange="buscarTipoEspecialidad()">
                             <option value="">Seleccione</option>
@@ -338,7 +221,7 @@
                         <div class="field-error" id="err_profesion">Ingrese la profesión</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="especialidad">Especialidad</label>
+                        <label class="floating-label" for="especialidad"><strong>Especialidad</strong></label>
                         <select class="form-control form-control-sm" name="especialidad" id="especialidad"
                                 onchange="buscarSubTipoEspecialidad()">
                             <option value="">Seleccione</option>
@@ -348,7 +231,7 @@
                 </div>
                 <div class="form-row profesional-only" id="row_subespecialidad" style="display:none">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="sub_tipo_especialidad">Sub-especialidad</label>
+                        <label class="floating-label" for="sub_tipo_especialidad"><strong>Sub-especialidad</strong></label>
                         <select class="form-control form-control-sm" name="sub_tipo_especialidad" id="sub_tipo_especialidad">
                             <option value="">Seleccione</option>
                         </select>
@@ -358,7 +241,7 @@
                 {{-- Campos exclusivos de asistentes --}}
                 <div class="form-row asistente-only" id="row_asistente" style="display:none">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="tipo_asistente">Tipo de asistente</label>
+                        <label class="floating-label" for="tipo_asistente"><strong>Tipo de asistente</strong></label>
                         <select class="form-control form-control-sm" name="tipo_asistente" id="tipo_asistente">
                             <option value="">Seleccione</option>
                             @foreach($tipo_asistente as $tipo)
@@ -374,7 +257,7 @@
 
                 <div class="wizard-nav">
                     <button type="button" class="btn btn-outline-secondary btn-sm" id="btnBack2">&lsaquo; Atrás</button>
-                    <button type="button" class="btn btn-dark btn-sm" id="btnNext2">Siguiente &rsaquo;</button>
+                    <button type="button" class="btn btn-sdi btn-sm" id="btnNext2">Siguiente &rsaquo;</button>
                 </div>
             </div>
 
@@ -394,13 +277,13 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-8">
-                        <label class="floating-label" for="direccion">Dirección</label>
+                        <label class="floating-label" for="direccion"><strong>Dirección</strong></label>
                         <input type="text" class="form-control form-control-sm" name="direccion" id="direccion"
                                autocomplete="off" value="{{ old('direccion') }}">
                         <div class="field-error" id="err_direccion">Ingrese la dirección</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-4">
-                        <label class="floating-label" for="numero_dir">Nº</label>
+                        <label class="floating-label" for="numero_dir"><strong>Nº</strong></label>
                         <input type="number" class="form-control form-control-sm" name="numero_dir"
                                id="numero_dir" autocomplete="off" value="{{ old('numero_dir') }}">
                     </div>
@@ -408,7 +291,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="region_id">Región</label>
+                        <label class="floating-label" for="region_id"><strong>Región</strong></label>
                         <select class="form-control form-control-sm" name="region_id" id="region_id" onchange="buscarCiudades(this.value)">
                             <option value="">Seleccione</option>
                             @foreach($regiones as $region)
@@ -421,7 +304,7 @@
                         <div class="field-error" id="err_region">Seleccione una región</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="ciudad_id">Comuna</label>
+                        <label class="floating-label" for="ciudad_id"><strong>Comuna</strong></label>
                         <select class="form-control form-control-sm" name="ciudad_id" id="ciudad_id">
                             <option value="">Seleccione</option>
                         </select>
@@ -431,18 +314,18 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="celular">Celular</label>
+                        <label class="floating-label" for="celular"><strong>Celular</strong></label>
                         <input type="tel" class="form-control form-control-sm" name="celular" id="celular"
                                autocomplete="off" placeholder="+569..." value="{{ old('celular') }}">
                         <div class="field-error" id="err_celular">Ingrese el celular</div>
                     </div>
                     {{-- <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="telefono">Teléfono</label>
+                        <label class="floating-label" for="telefono"><strong>Teléfono</strong></label>
                         <input type="tel" class="form-control form-control-sm" name="telefono" id="telefono"
                                autocomplete="off" placeholder="+562..." value="{{ old('telefono') }}">
                     </div> --}}
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="correo">Correo electrónico</label>
+                        <label class="floating-label" for="correo"><strong>Correo electrónico</strong></label>
                         <input type="email" class="form-control form-control-sm" name="correo" id="correo"
                                autocomplete="off" value="{{ old('correo') }}">
                         <div class="field-error" id="err_correo">Ingrese un correo válido</div>
@@ -473,14 +356,14 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="inst_rut">Rut institución</label>
+                        <label class="floating-label" for="inst_rut"><strong>Rut institución</strong></label>
                         <input type="text" class="form-control form-control-sm" name="inst_rut" id="inst_rut"
                                autocomplete="off" placeholder="12345678-9" oninput="formatoRut(this)"
                                value="{{ old('inst_rut') }}">
                         <div class="field-error" id="err_inst_rut">Ingrese el RUT de la institución</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="nombre_institucion">Nombre institución</label>
+                        <label class="floating-label" for="nombre_institucion"><strong>Nombre institución</strong></label>
                         <input type="text" class="form-control form-control-sm" name="nombre_institucion" id="nombre_institucion"
                                autocomplete="off" value="{{ old('nombre_institucion') }}">
                         <div class="field-error" id="err_nombre_institucion">Ingrese el nombre de la institución</div>
@@ -489,7 +372,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="tipo_institucion">Tipo de institución</label>
+                        <label class="floating-label" for="tipo_institucion"><strong>Tipo de institución</strong></label>
                         <select class="form-control form-control-sm" id="tipo_institucion" name="tipo_institucion" onchange="dame_subtipos_institucion()">
                             <option selected value="0">Seleccione</option>
                             @if (isset($tipo_institucion))
@@ -501,7 +384,7 @@
                         <div class="field-error" id="err_tipo_institucion">Ingrese el tipo de institución</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6 d-none" id="div_subtipo_institucion">
-                        <label class="floating-label" for="subtipo_institucion">Subtipo de institución</label>
+                        <label class="floating-label" for="subtipo_institucion"><strong>Subtipo de institución</strong></label>
                         <select class="form-control form-control-sm" id="subtipo_institucion" name="subtipo_institucion">
                             <option selected value="0">Seleccione</option>
                         </select>
@@ -518,13 +401,13 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-8">
-                        <label class="floating-label" for="inst_direccion">Dirección</label>
+                        <label class="floating-label" for="inst_direccion"><strong>Dirección</strong></label>
                         <input type="text" class="form-control form-control-sm" name="inst_direccion" id="inst_direccion"
                                autocomplete="off" value="{{ old('inst_direccion') }}">
                         <div class="field-error" id="err_inst_direccion">Ingrese la dirección</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-4">
-                        <label class="floating-label" for="inst_numero_dir">Nº</label>
+                        <label class="floating-label" for="inst_numero_dir"><strong>Nº</strong></label>
                         <input type="number" class="form-control form-control-sm" name="inst_numero_dir" id="inst_numero_dir"
                                autocomplete="off" value="{{ old('inst_numero_dir') }}">
                     </div>
@@ -532,7 +415,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="inst_region_id">Región</label>
+                        <label class="floating-label" for="inst_region_id"><strong>Región</strong></label>
                         <select class="form-control form-control-sm" name="inst_region_id" id="inst_region_id"
                                 onchange="buscarCiudadesInst(this.value)">
                             <option value="">Seleccione</option>
@@ -546,7 +429,7 @@
                         <div class="field-error" id="err_inst_region">Seleccione una región</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="inst_ciudad_id">Comuna</label>
+                        <label class="floating-label" for="inst_ciudad_id"><strong>Comuna</strong></label>
                         <select class="form-control form-control-sm" name="inst_ciudad_id" id="inst_ciudad_id">
                             <option value="">Seleccione</option>
                         </select>
@@ -556,7 +439,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="inst_telefono">Teléfono</label>
+                        <label class="floating-label" for="inst_telefono"><strong>Teléfono</strong></label>
                         <input type="tel" class="form-control form-control-sm" name="inst_telefono" id="inst_telefono"
                                autocomplete="off" placeholder="+562..."
                                value="{{ old('inst_telefono') }}">
@@ -566,7 +449,7 @@
 
                 <div class="wizard-nav">
                     <button type="button" class="btn btn-outline-secondary btn-sm" id="btnBack2Inst">&lsaquo; Atrás</button>
-                    <button type="button" class="btn btn-dark btn-sm" id="btnNext2Inst">Siguiente &rsaquo;</button>
+                    <button type="button" class="btn btn-sdi btn-sm" id="btnNext2Inst">Siguiente &rsaquo;</button>
                 </div>
             </div>
 
@@ -586,14 +469,14 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="responsable_rut">Rut responsable</label>
+                        <label class="floating-label" for="responsable_rut"><strong>Rut responsable</strong></label>
                         <input type="text" class="form-control form-control-sm" name="responsable_rut" id="responsable_rut"
                                autocomplete="off" placeholder="12345678-9"
                                value="{{ old('responsable_rut') }}">
                         <div class="field-error" id="err_responsable_rut">Ingrese el RUT del responsable</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="responsable_nombre">Nombre responsable</label>
+                        <label class="floating-label" for="responsable_nombre"><strong>Nombre responsable</strong></label>
                         <input type="text" class="form-control form-control-sm" name="responsable_nombre" id="responsable_nombre"
                                autocomplete="off" value="{{ old('responsable_nombre') }}">
                         <div class="field-error" id="err_responsable_nombre">Ingrese el nombre del responsable</div>
@@ -602,13 +485,13 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="responsable_apellido_uno">Primer apellido</label>
+                        <label class="floating-label" for="responsable_apellido_uno"><strong>Primer apellido</strong></label>
                         <input type="text" class="form-control form-control-sm" name="responsable_apellido_uno" id="responsable_apellido_uno"
                                autocomplete="off" value="{{ old('responsable_apellido_uno') }}">
                         <div class="field-error" id="err_responsable_apellido_uno">Ingrese el primer apellido</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="responsable_apellido_dos">Segundo apellido</label>
+                        <label class="floating-label" for="responsable_apellido_dos"><strong>Segundo apellido</strong></label>
                         <input type="text" class="form-control form-control-sm" name="responsable_apellido_dos" id="responsable_apellido_dos"
                                autocomplete="off" value="{{ old('responsable_apellido_dos') }}">
                     </div>
@@ -616,14 +499,14 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="responsable_celular">Celular</label>
+                        <label class="floating-label" for="responsable_celular"><strong>Celular</strong></label>
                         <input type="tel" class="form-control form-control-sm" name="responsable_celular" id="responsable_celular"
                                autocomplete="off" placeholder="+569..."
                                value="{{ old('responsable_celular') }}">
                         <div class="field-error" id="err_responsable_celular">Ingrese el celular del responsable</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="responsable_telefono">Teléfono</label>
+                        <label class="floating-label" for="responsable_telefono"><strong>Teléfono</strong></label>
                         <input type="tel" class="form-control form-control-sm" name="responsable_telefono" id="responsable_telefono"
                                autocomplete="off" placeholder="+562..."
                                value="{{ old('responsable_telefono') }}">
@@ -632,7 +515,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="correo_inst">Correo electrónico</label>
+                        <label class="floating-label" for="correo_inst"><strong>Correo electrónico</strong></label>
                         <input type="email" class="form-control form-control-sm" name="correo_inst" id="correo_inst"
                                autocomplete="off" value="{{ old('correo_inst') }}">
                         <div class="field-error" id="err_correo_inst">Ingrese un correo válido</div>
@@ -663,14 +546,14 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="serv_rut">Rut del servicio</label>
+                        <label class="floating-label" for="serv_rut"><strong>Rut del servicio</strong></label>
                         <input type="text" class="form-control form-control-sm" name="serv_rut" id="serv_rut"
                                autocomplete="off" placeholder="12345678-9" oninput="formatoRut(this)"
                                value="{{ old('serv_rut') }}">
                         <div class="field-error" id="err_serv_rut">Ingrese el RUT del servicio</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="nombre_servicio">Nombre del servicio</label>
+                        <label class="floating-label" for="nombre_servicio"><strong>Nombre del servicio</strong></label>
                         <input type="text" class="form-control form-control-sm" name="nombre_servicio" id="nombre_servicio"
                                autocomplete="off" value="{{ old('nombre_servicio') }}">
                         <div class="field-error" id="err_nombre_servicio">Ingrese el nombre del servicio</div>
@@ -679,7 +562,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="tipo_servicio">Tipo de servicio</label>
+                        <label class="floating-label" for="tipo_servicio"><strong>Tipo de servicio</strong></label>
                         <input type="text" class="form-control form-control-sm" name="tipo_servicio" id="tipo_servicio"
                                autocomplete="off" placeholder="Ej: Laboratorio, Imagenología..."
                                value="{{ old('tipo_servicio') }}">
@@ -694,13 +577,13 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-8">
-                        <label class="floating-label" for="serv_direccion">Dirección</label>
+                        <label class="floating-label" for="serv_direccion"><strong>Dirección</strong></label>
                         <input type="text" class="form-control form-control-sm" name="serv_direccion" id="serv_direccion"
                                autocomplete="off" value="{{ old('serv_direccion') }}">
                         <div class="field-error" id="err_serv_direccion">Ingrese la dirección</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-4">
-                        <label class="floating-label" for="serv_numero_dir">Nº</label>
+                        <label class="floating-label" for="serv_numero_dir"><strong>Nº</strong></label>
                         <input type="number" class="form-control form-control-sm" name="serv_numero_dir" id="serv_numero_dir"
                                autocomplete="off" value="{{ old('serv_numero_dir') }}">
                     </div>
@@ -708,7 +591,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="serv_region_id">Región</label>
+                        <label class="floating-label" for="serv_region_id"><strong>Región</strong></label>
                         <select class="form-control form-control-sm" name="serv_region_id" id="serv_region_id"
                                 onchange="buscarCiudadesServ(this.value)">
                             <option value="">Seleccione</option>
@@ -722,7 +605,7 @@
                         <div class="field-error" id="err_serv_region">Seleccione una región</div>
                     </div>
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="serv_ciudad_id">Comuna</label>
+                        <label class="floating-label" for="serv_ciudad_id"><strong>Comuna</strong></label>
                         <select class="form-control form-control-sm" name="serv_ciudad_id" id="serv_ciudad_id">
                             <option value="">Seleccione</option>
                         </select>
@@ -732,7 +615,7 @@
 
                 <div class="form-row">
                     <div class="form-group col-sm-12 col-md-6">
-                        <label class="floating-label" for="serv_telefono">Teléfono</label>
+                        <label class="floating-label" for="serv_telefono"><strong>Teléfono</strong></label>
                         <input type="tel" class="form-control form-control-sm" name="serv_telefono" id="serv_telefono"
                                autocomplete="off" placeholder="+562..."
                                value="{{ old('serv_telefono') }}">
@@ -741,7 +624,7 @@
 
                 <div class="wizard-nav">
                     <button type="button" class="btn btn-outline-secondary btn-sm" id="btnBack2Serv">&lsaquo; Atrás</button>
-                    <button type="button" class="btn btn-dark btn-sm" id="btnNext2Serv">Siguiente &rsaquo;</button>
+                    <button type="button" class="btn btn-sdi btn-sm" id="btnNext2Serv">Siguiente &rsaquo;</button>
                 </div>
             </div>
 

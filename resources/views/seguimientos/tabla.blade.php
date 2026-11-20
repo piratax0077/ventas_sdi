@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-hover">
+    <table class="table">
         <thead><tr><th>Cliente</th><th>Canal y referencia</th><th>Responsable</th><th>Seguimiento</th></tr></thead>
         <tbody>
         @forelse($seguimientos as $registro)

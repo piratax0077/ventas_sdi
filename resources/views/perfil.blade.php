@@ -117,10 +117,10 @@
                                 {{-- Botones de Acción --}}
                                 <div class="d-flex gap-2 float-right">
                                     <button type="submit" class="btn btn-info btn-lg mr-2">
-                                        <i class="fa fa-save me-2"></i> Guardar Cambios
+                                        <i class="bi bi-floppy me-2"></i> Guardar Cambios
                                     </button>
                                     <a href="{{ route('home') }}" class="btn btn-secondary btn-lg">
-                                        <i class="fa fa-arrow-left me-2"></i>  Volver
+                                        <i class="bi bi-arrow-left me-2"></i>  Volver
                                     </a>
                                 </div>
                             </form>

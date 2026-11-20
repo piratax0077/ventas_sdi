@@ -43,7 +43,7 @@
                     <p class="mb-0 opacity-75">Historial y estado de tus solicitudes de soporte</p>
                 </div>
                 <a href="{{ route('soporte.index') }}" class="btn btn-info btn-lg">
-                    <i class="fa fa-plus me-2"></i> Nueva Solicitud
+                    <i class="bi bi-plus-lg me-2"></i> Nueva Solicitud
                 </a>
             </div>
     
@@ -104,17 +104,15 @@
             </div>
             <div class="card-body p-0">
                 @if($solicitudes->isEmpty())
-                    <div class="py-5 text-center">
-                        <div style="font-size: 4rem; color: #ccc;"><i class="fa fa-inbox"></i></div>
-                        <h5 class="text-muted mt-3">Sin solicitudes</h5>
-                        <p class="text-muted">Aún no has enviado ninguna solicitud de soporte.</p>
-                        <a href="{{ route('soporte.index') }}" class="btn btn-info mt-2">
-                            <i class="fa fa-plus me-2"></i> Crear Primera Solicitud
-                        </a>
-                    </div>
+                    @include('partials.estado_vacio', [
+                        'titulo' => 'Aún no tienes solicitudes',
+                        'mensaje' => 'Cuando envíes una solicitud de soporte, aparecerá en este listado.',
+                        'accionUrl' => route('soporte.index'),
+                        'accionTexto' => 'Crear solicitud',
+                    ])
                 @else
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table mb-0">
                             <thead class="table-light">
                                 <tr>
                                     <th class="ps-3">Ticket</th>

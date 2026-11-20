@@ -46,7 +46,7 @@ ____          _____               _ _           _
                             <td>
                                 @unless($usuario->isSalesAdministrator())
                                 <a class="btn btn-warning" href="{{route("usuarios.edit",[$usuario])}}">
-                                    <i class="fa fa-edit"></i>
+                                    <i class="bi bi-pencil"></i>
                                 </a>
                                 @endunless
                             </td>
@@ -56,7 +56,7 @@ ____          _____               _ _           _
                                     @method("delete")
                                     @csrf
                                     <button type="submit" class="btn btn-danger">
-                                        <i class="fa fa-trash"></i>
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
                                 @endunless

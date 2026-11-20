@@ -158,10 +158,10 @@
                 <!-- Botones de Acción -->
                 <div class="mt-4 mb-4">
                     <button type="submit" class="btn btn-primary btn-lg" @disabled($software->isEmpty())>
-                        <i class="fa fa-save"></i> Guardar Plan
+                        <i class="bi bi-floppy"></i> Guardar Plan
                     </button>
                     <a href="{{route("planes.index")}}" class="btn btn-secondary btn-lg">
-                        <i class="fa fa-times"></i> Cancelar
+                        <i class="bi bi-x-lg"></i> Cancelar
                     </a>
                 </div>
             </form>

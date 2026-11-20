@@ -17,7 +17,7 @@
                     {{-- Botón agregar y opciones --}}
             <div class="mb-4 d-flex justify-content-between align-items-center d-inline">
                 <a href="{{route("productos-software.create")}}" class="btn btn-info btn-lg">
-                    <i class="fa fa-plus-circle me-2"></i> Agregar Producto
+                    <i class="bi bi-plus-circle me-2"></i> Agregar Producto
                 </a>
             </div>
              
@@ -38,7 +38,7 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive mt-3">
-                        <table class="table table-hover mb-0" id="tableProductosSoftware">
+                        <table class="table mb-0" id="tableProductosSoftware">
                             <thead class="table-light">
                             <tr>
                                 <th>Nombre</th>
@@ -89,16 +89,16 @@
                                     <td>
                                         
                                             <a class="btn btn-icon btn-blue" href="{{route("productos-software.show", $producto)}}" title="Ver detalles">
-                                                <i class="fa fa-eye"></i>
+                                                <i class="bi bi-eye"></i>
                                             </a>
                                             <a class="btn btn-icon btn-warning" href="{{route("productos-software.edit", $producto)}}" title="Editar">
-                                                <i class="fa fa-edit"></i>
+                                                <i class="bi bi-pencil"></i>
                                             </a>
                                             <form action="{{route("productos-software.destroy", $producto)}}" method="post" style="display:inline">
                                                 @method("delete")
                                                 @csrf
                                                 <button type="submit" class="btn btn-icon btn-danger" title="Eliminar" onclick="return confirm('¿Está seguro que desea eliminar este producto?')">
-                                                    <i class="fa fa-trash"></i>
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
                                     
@@ -106,15 +106,13 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-5">
-                                        <div style="color: #ccc; margin-bottom: 1rem; font-size: 3rem;">
-                                            <i class="fa fa-inbox"></i>
-                                        </div>
-                                        <h5 class="text-muted mb-2">Sin productos registrados</h5>
-                                        <p class="text-muted mb-3">No hay productos software disponibles en este momento.</p>
-                                        <a href="{{route("productos-software.create")}}" class="btn btn-primary">
-                                            <i class="fa fa-plus-circle me-2"></i>Crear Producto Ahora
-                                        </a>
+                                    <td colspan="7" class="p-0">
+                                        @include('partials.estado_vacio', [
+                                            'titulo' => 'Aún no hay productos de software registrados',
+                                            'mensaje' => 'Cuando crees un producto de software, aparecerá en este listado.',
+                                            'accionUrl' => route('productos-software.create'),
+                                            'accionTexto' => 'Crear producto',
+                                        ])
                                     </td>
                                 </tr>
                             @endforelse

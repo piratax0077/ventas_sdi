@@ -16,7 +16,7 @@
                     
                     <div class="mb-4 d-flex justify-content-between align-items-center d-inline">
                          <a href="{{route("clientes.create")}}"  class="btn btn-info btn-lg">
-                            <i class="fa fa-plus me-2"></i> Añadir Cliente
+                            <i class="bi bi-plus-lg me-2"></i> Añadir Cliente
                         </a>
                     </div>
              
@@ -29,7 +29,7 @@
                     <label for="buscar">Buscar cliente</label>
                     <input class="form-control" name="buscar" id="buscar" type="search" value="{{ $busqueda }}" placeholder="Nombre, RUT, correo o teléfono">
                 </div>
-                <button class="btn btn-catalogo-accion">Buscar</button>
+                <button class="btn btn-catalogo-accion" type="submit"><i class="bi bi-search" aria-hidden="true"></i> Buscar</button>
                 @if($busqueda !== '')
                     <a class="btn btn-outline-secondary" href="{{ route('clientes.index') }}">Limpiar</a>
                 @endif
@@ -50,7 +50,7 @@
                 </div>
                 <div class="card-body p-3">
                     <div class="table-responsive">
-                        <table id="tablaClientes" class="table table-hover mb-0">
+                        <table id="tablaClientes" class="table mb-0">
                             <thead class="table-light">
                             <tr>
                                 <th>Cliente</th>
@@ -94,32 +94,41 @@
                                     </td>
                                     <td>
                                             <button class="btn btn-icon btn-sucess" title="Ver estado de cuenta" data-bs-toggle="modal" data-bs-target="#modalEstadoCuenta{{$cliente->id}}" onclick="cargarEstadoCuenta({{$cliente->id}}, @js($cliente->nombre))">
-                                                <i class="fa fa-file-invoice-dollar"></i>
+                                                <i class="bi bi-receipt"></i>
                                             </button>
                                             <a class="btn btn-outline-primary btn-sm" href="{{ route('clientes.contacto', $cliente) }}">Contactar</a>
                                             <a class="btn  btn-icon btn-warning" href="{{route("clientes.edit",[$cliente])}}" title="Editar cliente">
-                                                <i class="fa fa-edit"></i>
+                                                <i class="bi bi-pencil"></i>
                                             </a>
                                             <form action="{{route("clientes.destroy", [$cliente])}}" method="post" style="display:inline" class="form-eliminar">
                                                 @method("delete")
                                                 @csrf
                                                 <button type="submit" class="btn btn-icon btn-danger" title="Eliminar cliente" onclick="confirmarEliminacionCliente(event, @js(trim($cliente->nombre.' '.($cliente->primer_apellido ?? ''))))">
-                                                    <i class="fa fa-trash"></i>
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center py-5">
-                                        <div style="color: #ccc; margin-bottom: 1rem; font-size: 3rem;">
-                                            <i class="fa fa-inbox"></i>
-                                        </div>
-                                        <h5 class="text-muted mb-2">Sin clientes para esta búsqueda</h5>
-                                        <p class="text-muted mb-3"> No hay clientes disponibles en este momento.</p>
-                                        <a href="{{route("clientes.create")}}" class="btn btn-primary">
-                                            <i class="fa fa-plus-circle me-2"></i> Crear Cliente Ahora
-                                        </a>
+                                    <td colspan="6" class="p-0">
+                                        @if($busqueda !== '')
+                                            @include('partials.estado_vacio', [
+                                                'titulo' => 'No se encontraron clientes',
+                                                'mensaje' => "Ningún cliente coincide con «{$busqueda}». Revisa lo que escribiste o busca por otro nombre, RUT, correo o teléfono.",
+                                                'accionUrl' => route('clientes.index'),
+                                                'accionTexto' => 'Ver todos los clientes',
+                                                'accionIcono' => null,
+                                                'accionClase' => 'btn-outline-secondary',
+                                            ])
+                                        @else
+                                            @include('partials.estado_vacio', [
+                                                'titulo' => 'Aún no hay clientes registrados',
+                                                'mensaje' => 'Cuando registres un cliente, aparecerá en este listado.',
+                                                'accionUrl' => route('clientes.create'),
+                                                'accionTexto' => 'Crear cliente',
+                                            ])
+                                        @endif
                                     </td>
                                 </tr>
                             @endforelse
@@ -162,7 +171,7 @@
                     <div class="modal-footer border-top">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-primary" onclick="descargarEstadoCuenta({{$cliente->id}}, @js($cliente->nombre))">
-                            <i class="fa fa-download me-2"></i>Descargar PDF
+                            <i class="bi bi-download me-2"></i>Descargar PDF
                         </button>
                     </div>
                 </div>
@@ -238,7 +247,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-sm table-hover">
+                        <table class="table table-sm">
                             <thead class="table-light">
                                 <tr>
                                     <th>Fecha</th>

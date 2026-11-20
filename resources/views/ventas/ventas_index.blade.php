@@ -10,14 +10,6 @@
                 border: none;
             }
 
-            .table-hover tbody tr {
-                transition: background-color 0.3s ease;
-            }
-
-            .table-hover tbody tr:hover {
-                background-color: #f8f9fa;
-            }
-
             .btn-action {
                 transition: all 0.3s ease;
                 font-size: 0.875rem;
@@ -31,17 +23,6 @@
             .badge-status {
                 padding: 0.5rem 0.75rem;
                 border-radius: 0.25rem;
-            }
-
-            .empty-state {
-                text-align: center;
-                padding: 3rem 1rem;
-            }
-
-            .empty-state-icon {
-                font-size: 3rem;
-                color: #dee2e6;
-                margin-bottom: 1rem;
             }
         </style>
     @endpush
@@ -74,7 +55,7 @@
                     </div>
                     <div class="card-body p-2">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table mb-0">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="border-0">
@@ -113,23 +94,23 @@
                                             <td class="align-middle">
                                           
                                                     <a class="btn btn-danger btn-sm btn-action" href="{{ route('ventas.ticket.pdf', $venta->id) }}" target="_blank" title="Descargar PDF">
-                                                        <i class="fa fa-file-pdf me-1"></i> PDF
+                                                        <i class="bi bi-file-earmark-pdf me-1"></i> PDF
                                                     </a>
                                                     {{-- <a class="btn btn-info btn-sm btn-action" href="{{route("ventas.ticket", ["id"=>$venta->id])}}" title="Imprimir Ticket">
-                                                        <i class="fa fa-print me-1"></i> Imprimir
+                                                        <i class="bi bi-printer me-1"></i> Imprimir
                                                     </a> --}}
                                         
                                             </td>
                                             <td class="align-middle text-center">
                                         
                                                     <a class="btn btn-blue btn-icon btn-action" href="{{route("ventas.show", $venta)}}" title="Ver detalles">
-                                                        <i class="fa fa-eye me-1"></i> 
+                                                        <i class="bi bi-eye me-1"></i> 
                                                     </a>
                                                     <form action="{{route("ventas.destroy", [$venta])}}" method="post" class="d-inline">
                                                         @method("delete")
                                                         @csrf
                                                         <button type="submit" class="btn btn-danger btn-icon btn-action" onclick="confirmarEliminacionVenta(event, '{{ $venta->id }}')">
-                                                            <i class="fa fa-trash me-1"></i>
+                                                            <i class="bi bi-trash me-1"></i>
                                                         </button>
                                                     </form>
                                             
@@ -145,13 +126,10 @@
                 <!-- Estado Vacío -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
-                        <div class="empty-state">
-                            <div class="empty-state-icon">
-                                <i class="fa fa-inbox"></i>
-                            </div>
-                            <h5 class="text-muted mb-2"> No hay ventas registradas</h5>
-                            <p class="text-muted mb-0"> Cuando registres nuevas ventas, aparecerán aquí.</p>
-                        </div>
+                        @include('partials.estado_vacio', [
+                            'titulo' => 'Aún no hay ventas registradas',
+                            'mensaje' => 'Cuando registres una venta, aparecerá en este listado.',
+                        ])
                     </div>
                 </div>
             @endif

@@ -1,7 +1,15 @@
 @extends('maestra')
 @section('titulo', 'Videos para vendedores')
+{{-- Esta vista usa todo el ancho disponible --}}
+@section('clase_contenedor', 'container-fluid')
 @section('contenido')
     @php
+        // En el menú y el desplegable se omite la línea en los títulos "Veterchile para …" / "Medichile para …"
+        $tituloMenu = function ($titulo) {
+            return preg_match('/^(Veterchile|Medichile)\s+para\s/iu', $titulo)
+                ? ucfirst(preg_replace('/^(Veterchile|Medichile)\s+/iu', '', $titulo))
+                : $titulo;
+        };
         $practica = $linea === 'veterchile' ? [
             [
                 'pregunta' => '¿Qué le mostrarías primero a una tutora que tiene los exámenes de su mascota repartidos?',
@@ -68,70 +76,142 @@
         ];
     @endphp
 
-    <h1 class="h3 mb-3">Videos para vendedores</h1>
-    @include('partials.pestanas_capacitacion', ['rutaPestanas' => 'vender.videos'])
-    <a class="btn btn-outline-primary mb-3" href="#practica-fmu">Ir a la práctica de venta</a>
-    <div class="row">
-        @forelse($videos as $video)
-            <div class="col-12 col-xl-6 mb-4">
-                <section class="card h-100" aria-labelledby="titulo-video-{{ $video->id }}">
-                    <div class="card-body d-flex flex-column">
-                        <h2 id="titulo-video-{{ $video->id }}" class="h5">{{ $video->titulo }}</h2>
-                        @if($video->descripcion)
-                            <p class="text-muted">{{ $video->descripcion }}</p>
-                        @endif
-                        <div class="mt-auto">@include('administracion.videos.reproductor')</div>
-                        @if($explicacion = $video->explicacion())
-                            @include('vender.explicacion_video')
-                        @endif
-                        @if($demostracion = $video->demostracion())
-                            @include('vender.demostracion_video')
-                        @endif
-                    </div>
-                </section>
-            </div>
-        @empty
-            <div class="col-12"><p class="text-muted">Sin videos de capacitación disponibles.</p></div>
-        @endforelse
+    {{-- Tipografía compacta de la sección (ver "VIDEOS PARA VENDEDORES · TIPOGRAFÍA" en main.css) --}}
+    <div class="seccion-videos">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="h3 mb-0">Videos para vendedores</h1>
+        <a class="btn btn-outline-primary" href="#practica-fmu" data-ir-practica>
+            <i class="bi bi-clipboard-check mr-1" aria-hidden="true"></i> Ir a la práctica de venta
+        </a>
     </div>
-
-    <section class="card card-body" id="practica-fmu" aria-labelledby="titulo-practica-fmu">
-        <h2 class="h5" id="titulo-practica-fmu">Práctica de venta · Caso ficticio</h2>
-        @if($linea === 'veterchile')
-            <p>Sofía cuida de su perro Bruno y guarda sus exámenes y recetas en distintos lugares. Quiere organizar sus documentos y reservar el próximo control veterinario.</p>
-        @else
-            <p>Camila tiene un próximo control y guarda sus recetas y documentos en distintos lugares. Quiere saber para qué le serviría suscribirse y si podrá usar la ficha en sus próximos controles.</p>
-        @endif
-        <form id="prueba-fmu">
-            @foreach($practica as $numero => $paso)
-                <fieldset class="border rounded p-3 mb-3">
-                    <legend class="h6">{{ $paso['pregunta'] }}</legend>
-                    @foreach($paso['opciones'] as $indice => [$texto, $comentario, $correcta])
-                        <div class="form-check mb-2">
-                            <input type="radio" class="form-check-input" name="respuesta-{{ $numero }}"
-                                   id="respuesta-{{ $numero }}-{{ $indice }}" required
-                                   data-correcta="{{ $correcta ? 'si' : 'no' }}" data-comentario="{{ $comentario }}">
-                            <label class="form-check-label" for="respuesta-{{ $numero }}-{{ $indice }}">{{ $texto }}</label>
-                        </div>
+    @include('partials.pestanas_capacitacion', ['rutaPestanas' => 'vender.videos'])
+    @if($videos->isEmpty())
+        @include('partials.estado_vacio', [
+            'titulo' => 'Aún no hay videos de capacitación',
+            'mensaje' => 'Cuando se publiquen videos para esta línea, aparecerán aquí.',
+        ])
+    @else
+        {{-- Lista de videos a la izquierda y un solo video visible a la derecha (ver public/js/videos-lista.js) --}}
+        <div class="videos-lista mb-4" data-videos-lista>
+            <div class="videos-lista__indice">
+                <label class="videos-lista__selector-label" for="selector-video">Video</label>
+                {{-- El primer video es la presentación general; el resto se agrupa bajo "Soluciones" --}}
+                <select class="form-select videos-lista__selector" id="selector-video" data-no-select2 data-videos-selector>
+                    <option value="{{ $videos->first()->id }}">{{ $videos->first()->titulo }}</option>
+                    @if($videos->count() > 1)
+                        <optgroup label="Soluciones">
+                            @foreach($videos->skip(1) as $video)
+                                <option value="{{ $video->id }}">{{ $tituloMenu($video->titulo) }}</option>
+                            @endforeach
+                        </optgroup>
+                    @endif
+                </select>
+                <nav class="videos-lista__menu" aria-label="Videos de capacitación">
+                    @foreach($videos as $video)
+                        @if($loop->index === 1)
+                            <p class="videos-lista__grupo">Soluciones</p>
+                        @endif
+                        <button type="button" class="videos-lista__item" data-videos-boton="{{ $video->id }}"
+                                aria-controls="video-{{ $video->id }}" aria-pressed="{{ $loop->first ? 'true' : 'false' }}">
+                            {{ $tituloMenu($video->titulo) }}
+                        </button>
                     @endforeach
-                    <p class="small mb-0" data-comentario-paso hidden></p>
-                </fieldset>
-            @endforeach
-            <div class="d-flex flex-wrap gap-2">
-                <button class="btn btn-catalogo-accion" type="submit">Revisar respuestas</button>
-                <button class="btn btn-outline-secondary" type="reset">Reiniciar práctica</button>
+                </nav>
             </div>
-            <p class="mt-3 mb-0 fw-semibold" id="resultado-fmu" role="status"></p>
-        </form>
-    </section>
+            <div class="videos-lista__panel">
+                @foreach($videos as $video)
+                    <section class="card video-card" id="video-{{ $video->id }}" data-videos-panel="{{ $video->id }}"
+                             aria-labelledby="titulo-video-{{ $video->id }}" @unless($loop->first) hidden @endunless>
+                        <div class="card-body d-flex flex-column">
+                            <h2 id="titulo-video-{{ $video->id }}" class="h5 video-card-titulo">{{ $video->titulo }}</h2>
+                            @if($video->descripcion)
+                                <p class="video-card-descripcion">{{ $video->descripcion }}</p>
+                            @endif
+                            <div>@include('administracion.videos.reproductor')</div>
+                            @php
+                                $explicacion = $video->explicacion();
+                                $demostracion = $video->demostracion();
+                            @endphp
+                            {{-- Ventajas, Demostración y Práctica de venta en pestañas tipo pill (Bootstrap 5 tab) --}}
+                                <div class="video-pestanas">
+                                    <div class="nav nav-pills video-pestanas__nav" role="tablist" aria-label="Contenido del video">
+                                        @if($explicacion)
+                                            <button type="button" class="nav-link active" role="tab"
+                                                    id="tab-ventajas-{{ $video->id }}" data-bs-toggle="pill"
+                                                    data-bs-target="#pane-ventajas-{{ $video->id }}"
+                                                    aria-controls="pane-ventajas-{{ $video->id }}" aria-selected="true">
+                                                <i class="bi bi-star mr-1" aria-hidden="true"></i> Ventajas
+                                            </button>
+                                        @endif
+                                        @if($demostracion)
+                                            <button type="button" class="nav-link {{ $explicacion ? '' : 'active' }}" role="tab"
+                                                    id="tab-demo-{{ $video->id }}" data-bs-toggle="pill"
+                                                    data-bs-target="#pane-demo-{{ $video->id }}"
+                                                    aria-controls="pane-demo-{{ $video->id }}" aria-selected="{{ $explicacion ? 'false' : 'true' }}">
+                                                <i class="bi bi-play-circle mr-1" aria-hidden="true"></i> Demostración
+                                            </button>
+                                        @endif
+                                        <button type="button" class="nav-link {{ $explicacion || $demostracion ? '' : 'active' }}" role="tab"
+                                                id="tab-practica-{{ $video->id }}" data-bs-toggle="pill" data-pestana-practica
+                                                data-bs-target="#pane-practica-{{ $video->id }}"
+                                                aria-controls="pane-practica-{{ $video->id }}" aria-selected="{{ $explicacion || $demostracion ? 'false' : 'true' }}">
+                                            <i class="bi bi-clipboard-check mr-1" aria-hidden="true"></i> Práctica de venta
+                                        </button>
+                                    </div>
+                                    <div class="tab-content">
+                                        @if($explicacion)
+                                            <div class="tab-pane fade show active" id="pane-ventajas-{{ $video->id }}"
+                                                 role="tabpanel" aria-labelledby="tab-ventajas-{{ $video->id }}" tabindex="0">
+                                                @include('vender.explicacion_video')
+                                            </div>
+                                        @endif
+                                        @if($demostracion)
+                                            <div class="tab-pane fade {{ $explicacion ? '' : 'show active' }}" id="pane-demo-{{ $video->id }}"
+                                                 role="tabpanel" aria-labelledby="tab-demo-{{ $video->id }}" tabindex="0">
+                                                @include('vender.demostracion_video')
+                                            </div>
+                                        @endif
+                                        <div class="tab-pane fade {{ $explicacion || $demostracion ? '' : 'show active' }}" id="pane-practica-{{ $video->id }}"
+                                             role="tabpanel" aria-labelledby="tab-practica-{{ $video->id }}" tabindex="0">
+                                            @include('vender.practica_venta', ['sufijo' => $video->id])
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </section>
+                @endforeach
+            </div>
+        </div>
+    @endif
+
+    {{-- Sin videos, la práctica se muestra sola debajo del estado vacío --}}
+    @if($videos->isEmpty())
+        <div id="practica-fmu">
+            @include('vender.practica_venta', ['sufijo' => 'general'])
+        </div>
+    @endif
+    </div>
 @endsection
 
 @push('scripts')
 <script src="{{ asset('js/demostraciones-videos.js') }}" defer></script>
+<script src="{{ asset('js/videos-lista.js') }}?v={{ filemtime(public_path('js/videos-lista.js')) }}" defer></script>
 <script>
     (() => {
-        const formulario = document.getElementById('prueba-fmu');
-        const resultado = document.getElementById('resultado-fmu');
+        // "Ir a la práctica de venta": abre la pill de práctica del video visible
+        const irPractica = document.querySelector('[data-ir-practica]');
+        irPractica?.addEventListener('click', (evento) => {
+            const panel = document.querySelector('[data-videos-panel]:not([hidden])');
+            const pestana = panel?.querySelector('[data-pestana-practica]');
+            if (!pestana || !window.bootstrap) return;
+            evento.preventDefault();
+            bootstrap.Tab.getOrCreateInstance(pestana).show();
+            pestana.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        // Una práctica por video: cada formulario revisa sus propias respuestas
+        document.querySelectorAll('[data-practica-venta]').forEach((formulario) => {
+        const resultado = formulario.querySelector('[data-resultado-practica]');
         const pasos = Array.from(formulario.querySelectorAll('fieldset'));
 
         formulario.addEventListener('submit', (evento) => {
@@ -156,6 +236,7 @@
                 comentario.textContent = '';
                 comentario.hidden = true;
             }
+        });
         });
     })();
 </script>

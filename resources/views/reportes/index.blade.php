@@ -25,7 +25,7 @@
         <div class="col-12">
             <h1>Reportes del Sistema <i class="fa fa-file-alt"></i></h1>
             <a href="{{route("reportes.create")}}" class="btn btn-success mb-2">
-                <i class="fa fa-plus"></i> Crear Nuevo Reporte
+                <i class="bi bi-plus-lg"></i> Crear Nuevo Reporte
             </a>
             @include("notificacion")
 
@@ -34,7 +34,7 @@
                 <div class="card-body">
                     <div class="btn-group" role="group">
                         <a href="{{route("reportes.index")}}" class="btn btn-outline-secondary">
-                            <i class="fa fa-list"></i> Todos
+                            <i class="bi bi-list-ul"></i> Todos
                         </a>
                         @foreach($tipos as $tipo)
                             <a href="?tipo={{$tipo}}" class="btn btn-outline-primary">
@@ -47,7 +47,7 @@
 
             <!-- Tabla de Reportes -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered">
                     <thead class="table-dark">
                     <tr>
                         <th>Nombre</th>
@@ -120,24 +120,29 @@
                             </td>
                             <td style="white-space: nowrap;">
                                 <a class="btn btn-info btn-sm" href="{{route("reportes.show", $reporte)}}">
-                                    <i class="fa fa-eye"></i>
+                                    <i class="bi bi-eye"></i>
                                 </a>
                                 <a class="btn btn-warning btn-sm" href="{{route("reportes.edit", $reporte)}}">
-                                    <i class="fa fa-edit"></i>
+                                    <i class="bi bi-pencil"></i>
                                 </a>
                                 <form action="{{route("reportes.destroy", $reporte)}}" method="post" style="display:inline">
                                     @method("delete")
                                     @csrf
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro?')">
-                                        <i class="fa fa-trash"></i>
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center text-muted py-4">
-                                No hay reportes registrados. <a href="{{route("reportes.create")}}">Crear uno ahora</a>
+                            <td colspan="9" class="p-0">
+                                @include('partials.estado_vacio', [
+                                    'titulo' => 'Aún no hay reportes registrados',
+                                    'mensaje' => 'Cuando crees un reporte, aparecerá en este listado.',
+                                    'accionUrl' => route('reportes.create'),
+                                    'accionTexto' => 'Crear reporte',
+                                ])
                             </td>
                         </tr>
                     @endforelse

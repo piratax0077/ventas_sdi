@@ -17,14 +17,18 @@
             <option value="{{ $valor }}" data-descripcion="{{ $descripcionesNivel[$valor] }}" @selected($seleccionNivel === $valor)>{{ $etiqueta }}</option>
         @endforeach
     </select>
-    <p class="form-text text-muted mb-0" id="descripcion-nivel" aria-live="polite">{{ $descripcionNivel }}</p>
+    @unless($esFiltroNivel)
+        <p class="form-text text-muted mb-0" id="descripcion-nivel" aria-live="polite">{{ $descripcionNivel }}</p>
+    @endunless
     @error('nivel')
         <div class="invalid-feedback">{{ $message }}</div>
     @enderror
 </div>
+@unless($esFiltroNivel)
 <script>
     document.getElementById('nivel').addEventListener('change', (event) => {
         const opcion = event.target.selectedOptions[0];
         document.getElementById('descripcion-nivel').textContent = opcion?.dataset.descripcion ?? '';
     });
 </script>
+@endunless

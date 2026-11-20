@@ -1,31 +1,84 @@
-/* ================== TIPOGRAFÍA ================== */
-
-.ibm-plex-sans-<uniquifier> {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: <weight>;
+/* ================== FUENTE DM SANS (local, variable 100–1000) ==================
+   Archivos en public/fonts/dm-sans · licencia SIL OFL en OFL.txt
+   Uso: font-family: var(--sdi-font); o la clase .font-principal
+   Cualquier peso entre 100 y 1000 funciona (ej. font-weight: 650). */
+@font-face {
+  font-family: "DM Sans";
   font-style: normal;
-  font-variation-settings: "wdth" 100;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url("../fonts/dm-sans/dm-sans-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "DM Sans";
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: swap;
+  src: url("../fonts/dm-sans/dm-sans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+:root { --sdi-font: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+.font-principal { font-family: var(--sdi-font); }
+
+
+/* ================== VARIABLES SDI ================== */
+
+:root {
+  --sdi-blue: #1a49a3;
+  --sdi-blue-dark: #123a85;
+  --sdi-blue-light: #507bc7;
+  --sdi-blue-soft: #e7efff;
+  --sdi-gradient: linear-gradient(185deg, rgba(26,73,163,1) 28%, rgba(80,123,199,1) 100%);
+  --sdi-text: #343a40;
+  --sdi-border: #d5dbe5;
+  --sdi-radius: .5rem;
+  --sdi-focus: 0 0 0 .2rem rgba(26,73,163,.18);
 }
 
+/* ================== TIPOGRAFÍA ================== */
+
+/* DM Sans en todo el sistema (texto, formularios, botones, tablas, Select2, alertas) */
 body {
+  font-family: var(--sdi-font);
   background-color: #f4f4f4 !important;
   color: #4c4c4c;
 }
 
-h1, h2, h3 {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-weight: 700;
-  color: #1f63bb;
+/* Escala de pesos de títulos (DM Sans variable). Incluye las clases .h1–.h6
+   porque Bootstrap 4 les pone 500 y, al ser clase, le gana a la etiqueta. */
+:root {
+  --sdi-peso-h1: 800;
+  --sdi-peso-h2: 750;
+  --sdi-peso-h3: 700;
+  --sdi-peso-h4: 700;
+  --sdi-peso-h5: 650;
+  --sdi-peso-h6: 600;
 }
 
-h4, h5, h6 {
-  font-family: "IBM Plex Sans", sans-serif;
-  font-weight: 700;
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+  font-family: var(--sdi-font);
+  letter-spacing: -.01em;
 }
+h1, h2, h3,
+.h1, .h2, .h3 { color: #1f63bb; }
+
+h1, .h1 { font-weight: var(--sdi-peso-h1); }
+h2, .h2 { font-weight: var(--sdi-peso-h2); }
+h3, .h3 { font-weight: var(--sdi-peso-h3); }
+h4, .h4 { font-weight: var(--sdi-peso-h4); }
+h5, .h5 { font-weight: var(--sdi-peso-h5); }
+h6, .h6 { font-weight: var(--sdi-peso-h6); }
+
+/* Otros títulos de componentes */
+.card-title,
+.modal-title,
+.card-header > h1, .card-header > h2, .card-header > h3,
+.card-header > h4, .card-header > h5, .card-header > h6 { font-weight: 700; }
 
 p {
-  font-family: "IBM Plex Sans", sans-serif;
+  font-family: var(--sdi-font);
   font-weight: 400;
 }
 
@@ -430,4 +483,913 @@ button {
     display: flex;
     justify-content: center;
     gap: .375rem;
+}
+
+/* ══════════════════════════════════
+   Wizard registro de clientes (clientes_create)
+══════════════════════════════════ */
+    /* ── Wizard card ── */
+    .wizard-card {
+        max-width: 700px;
+        margin: 0 auto;
+        border-radius: .5rem;
+        box-shadow: 0 4px 18px rgba(0,0,0,.12);
+    }
+    .wizard-card .card-top {
+        background: var(--sdi-gradient);
+        color: #fff;
+        padding: 1.1rem 1.5rem .8rem;
+        border-radius: .5rem .5rem 0 0;
+        text-align: center;
+    }
+    .wizard-card .card-top h5 { margin-bottom: .2rem; font-size: 1.15rem; }
+    .wizard-card .card-top p  { margin: 0; font-size: .85rem; opacity: .8; }
+
+    /* ── Progress bar ── */
+    .wizard-progress { border-radius: 0; height: 8px; }
+    .wizard-progress .progress-bar { transition: width .4s ease; background: var(--sdi-gradient); }
+
+    /* ── Step indicators ── */
+    .wizard-steps {
+        display: flex;
+        justify-content: center;
+        gap: 2.5rem;
+        padding: .65rem 0 .3rem;
+        border-bottom: 1px solid #e9ecef;
+        margin-bottom: 1.2rem;
+    }
+    .wizard-steps .step-btn {
+        background: none;
+        border: none;
+        font-size: .82rem;
+        color: #adb5bd;
+        cursor: default;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+    }
+    .wizard-steps .step-btn .step-circle {
+        width: 28px; height: 28px;
+        border-radius: 50%;
+        background: #dee2e6;
+        color: #6c757d;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 600; font-size: .78rem;
+        transition: background .3s, color .3s;
+    }
+    .wizard-steps .step-btn.active .step-circle { background: var(--sdi-blue); color: #fff; }
+    .wizard-steps .step-btn.done   .step-circle { background: var(--sdi-blue-light); color: #fff; }
+    .wizard-steps .step-btn.active span:last-child,
+    .wizard-steps .step-btn.done   span:last-child { color: var(--sdi-blue); font-weight: 600; }
+
+    /* ── Tab panes ── */
+    .wizard-pane { display: none; }
+    .wizard-pane.active { display: block; }
+
+    /* ── Tarjetas de rol ── */
+    .role-cards {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 1rem 0 1.5rem;
+    }
+    .role-card {
+        width: 180px;
+        flex: 0 0 180px;
+        border: 2px solid #dee2e6;
+        border-radius: .5rem;
+        padding: 1.4rem 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color .2s, box-shadow .2s;
+        user-select: none;
+    }
+    .role-card:hover { border-color: #adb5bd; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+    .role-card.selected { border-color: var(--sdi-blue); box-shadow: 0 2px 12px rgba(26,73,163,.15); background: #f8f9fa; }
+    .role-card.advancing { border-color: var(--sdi-blue); box-shadow: 0 2px 14px rgba(26,73,163,.3); background: #eef3fb; }
+
+    /* ── Rol seleccionado (badge) ── */
+    .selected-role-badge {
+        background: #e8f5e9;
+        border-left: 4px solid #28a745;
+        padding: .5rem .8rem;
+        margin: 1rem 0 1rem;
+        font-size: .85rem;
+        border-radius: .25rem;
+        display: none;
+    }
+    .selected-role-badge.visible { display: block; }
+    .selected-role-badge strong { color: #28a745; }
+    .role-card .role-icon { font-size: 2rem; margin-bottom: .5rem; }
+    .role-card .role-label { font-weight: 600; font-size: .9rem; color: #343a40; }
+    .role-card .role-desc  { font-size: .75rem; color: #6c757d; margin-top: .2rem; }
+    .role-error { color: #dc3545; font-size: .8rem; text-align: center; display: none; margin-top: -.5rem; margin-bottom: .5rem; }
+
+    /* ── Nav buttons ── */
+    .wizard-nav {
+        display: flex;
+        justify-content: flex-end;
+        gap: .5rem;
+        margin-top: 1.4rem;
+    }
+
+    /* Labels, inputs y botones del wizard usan el sistema unificado (ver "SISTEMA UNIFICADO"). */
+
+    /* ── Validation ── */
+    .is-invalid-field { border-color: #dc3545 !important; }
+    .field-error { color: #dc3545; font-size: .75rem; margin-top: .2rem; display: none; }
+
+
+/* ══════════════════════════════════════════════════════
+   SISTEMA UNIFICADO · botones, labels, inputs y pestañas
+   (va al final para tener prioridad sobre reglas anteriores)
+══════════════════════════════════════════════════════ */
+
+/* ── Botones: base común ── */
+.btn {
+  font-family: var(--sdi-font);
+  font-weight: 600;
+  font-size: .9rem;
+  border-radius: var(--sdi-radius);
+  padding: .45rem 1rem;
+  text-transform: none;
+  background-image: none !important;   /* botones planos, sin degradado */
+  transition: background-color .3s ease, color .3s ease, border-color .3s ease, box-shadow .3s ease !important;
+}
+button { text-transform: none; }
+
+.btn-sm,
+.btn-group-sm > .btn {
+  font-size: .8rem;
+  padding: .3rem .75rem;
+  border-radius: calc(var(--sdi-radius) - .1rem);
+}
+
+.btn:focus,
+.btn.focus { box-shadow: var(--sdi-focus); }
+
+/* Primario: azul plano del menú */
+.btn.btn-primary,
+.btn.btn-blue,
+.btn.btn-sdi,
+.btn.btn-catalogo-accion {
+  background-color: var(--sdi-blue) !important;
+  color: #fff;
+}
+.btn.btn-primary:hover,
+.btn.btn-blue:hover,
+.btn.btn-sdi:hover,
+.btn.btn-catalogo-accion:hover,
+.btn.btn-primary:focus,
+.btn.btn-blue:focus,
+.btn.btn-sdi:focus,
+.btn.btn-catalogo-accion:focus {
+  background-color: var(--sdi-blue-dark) !important;
+  color: #fff;
+}
+
+/* Secundarios con contorno (el .btn global quita el borde; aquí se repone) */
+.btn.btn-outline-primary {
+  border: 1px solid var(--sdi-blue) !important;
+  color: var(--sdi-blue);
+  background: #fff;
+}
+.btn.btn-outline-primary:hover,
+.btn.btn-outline-primary.active,
+.btn.btn-outline-primary[aria-pressed="true"] {
+  background: var(--sdi-blue-soft);
+  color: var(--sdi-blue-dark);
+}
+.btn.btn-outline-secondary {
+  border: 1px solid var(--sdi-border) !important;
+  color: #5a6270;
+  background: #fff;
+}
+.btn.btn-outline-secondary:hover {
+  background: #f1f3f6;
+  color: var(--sdi-text);
+}
+
+/* ── Labels ── */
+label,
+.form-label,
+.floating-label {
+  font-family: var(--sdi-font);
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--sdi-text);
+  margin-bottom: .3rem;
+}
+.form-check-label {          /* opciones de radio/checkbox: texto normal */
+  font-size: .9rem;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+/* ── Inputs y selects ── */
+.form-control,
+.form-select,
+.custom-select,
+.select2-container--default .select2-selection--single,
+.select2-container--default .select2-selection--multiple {
+  border: 1px solid var(--sdi-border);
+  border-radius: var(--sdi-radius);
+  color: var(--sdi-text);
+  font-size: .9rem;
+  transition: border-color .2s, box-shadow .2s;
+}
+.form-control::placeholder { color: #a0a7b4; }
+.form-control-sm { font-size: .85rem; border-radius: calc(var(--sdi-radius) - .1rem); }
+
+.form-control:focus,
+.form-select:focus,
+.custom-select:focus,
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--open .select2-selection--single {
+  border-color: var(--sdi-blue-light);
+  box-shadow: var(--sdi-focus);
+  outline: 0;
+}
+.form-check-input { accent-color: var(--sdi-blue); }
+
+/* ── Pestañas ── */
+.nav-tabs {
+  border-bottom: 2px solid #e3e7ee;
+  gap: .25rem;
+}
+/* El tema Bootswatch mueve la pestaña activa/hover (margin-top y padding distintos).
+   Aquí todos los estados comparten la misma caja, así no cambia de posición. */
+.nav-tabs .nav-item { margin-bottom: 0; }
+.nav-tabs .nav-link,
+.nav-tabs .nav-link:hover,
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link.active,
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link:not(.disabled):hover,
+.nav-tabs .nav-link:not(.disabled):focus {
+  border: 0 !important;
+  border-bottom: 3px solid transparent !important;
+  border-radius: 0;
+  margin: 0 0 -2px 0;
+  padding: .6rem 1.1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  background: transparent;
+  transition: color .3s ease, border-color .3s ease;
+}
+.nav-tabs .nav-link { color: #6c757d; }
+.nav-tabs .nav-link:hover { color: var(--sdi-blue); }
+.nav-tabs .nav-link.active {
+  color: var(--sdi-blue);
+  background: transparent;
+  border-bottom-color: var(--sdi-blue) !important;
+}
+
+/* ── Utilidades Bootstrap 5 usadas en vistas (el CSS base es Bootstrap 4) ── */
+.gap-2 { gap: .5rem !important; }
+.gap-3 { gap: 1rem !important; }
+.fw-light    { font-weight: 300 !important; }
+.fw-normal   { font-weight: 400 !important; }
+.fw-medium   { font-weight: 500 !important; }
+.fw-semibold { font-weight: 600 !important; }
+.fw-bold     { font-weight: 700 !important; }
+.fw-bolder   { font-weight: 800 !important; }
+
+
+/* ══════════════════════════════════
+   Videos para vendedores
+══════════════════════════════════ */
+.video-card {
+  border: 1px solid #e6e9ef;
+  box-shadow: 0 2px 10px rgba(16, 40, 90, .05);
+}
+.video-card .card-body { padding: 1.5rem; }
+.video-card .video-card-titulo { color: var(--sdi-blue); margin-bottom: .5rem; }
+.video-card .video-card-descripcion { font-size: .92rem; color: #6c757d; margin-bottom: 1rem; }
+.video-card video { border-radius: var(--sdi-radius); }
+.video-card details summary { cursor: pointer; color: var(--sdi-blue); }
+
+/* ── Lista de videos: índice a la izquierda, un solo video a la derecha ── */
+.videos-lista {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  scroll-margin-top: 1rem;
+}
+.videos-lista__panel { min-width: 0; }
+.videos-lista__panel .video-card-titulo:focus { outline: 0; }
+.videos-lista__menu { display: none; }
+.videos-lista__selector-label { font-weight: 600; margin-bottom: .35rem; }
+
+@media (min-width: 992px) {
+  .videos-lista { grid-template-columns: 280px minmax(0, 1fr); gap: 1.5rem; }
+  .videos-lista__selector-label,
+  .videos-lista__selector { display: none; }
+  .videos-lista__indice { position: sticky; top: 1rem; }
+  .videos-lista__menu {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    background: #fff;
+    border: 1px solid #e6e9ef;
+    border-radius: var(--sdi-radius);
+    padding: .75rem;
+  }
+}
+
+/* Título de grupo dentro de la lista (ej.: "Soluciones") */
+.videos-lista__grupo {
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--sdi-blue);
+  margin: .75rem 0 .25rem;
+  padding: .75rem .75rem 0;
+  border-top: 1px solid #e6e9ef;
+}
+.videos-lista__item {
+  display: block;
+  width: 100%;
+  padding: .6rem .75rem;
+  border: 0;
+  border-radius: var(--sdi-radius);
+  background: transparent;
+  color: var(--sdi-text);
+  font-family: var(--sdi-font);
+  font-size: .92rem;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+}
+.videos-lista__item:focus-visible { outline: 0; box-shadow: var(--sdi-focus); }
+.videos-lista__item[aria-pressed="true"] {
+  background: var(--sdi-blue-soft);
+  color: var(--sdi-blue-dark);
+  font-weight: 600;
+}
+
+
+/* ══════════════════════════════════
+   ALTURA ÚNICA · inputs, selects y botones
+══════════════════════════════════ */
+:root {
+  --sdi-control-h: 2.375rem;     /* 38px: inputs, selects y botones */
+  --sdi-control-h-sm: 2rem;      /* 32px: botones pequeños */
+}
+
+.form-control,
+.form-control-sm,
+.custom-select,
+.form-select {
+  height: var(--sdi-control-h);
+  padding: .375rem .75rem;
+  font-size: .9rem;
+  line-height: 1.5;
+}
+textarea.form-control { height: auto; }
+
+.btn:not(.btn-icon):not(.btn-block) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .35rem;
+  min-height: var(--sdi-control-h);
+  padding-top: 0;
+  padding-bottom: 0;
+  line-height: 1.2;
+}
+.btn.btn-block { min-height: var(--sdi-control-h); }
+.btn-sm:not(.btn-icon):not(.btn-block) { min-height: var(--sdi-control-h-sm); }
+.btn.btn-catalogo-accion { min-height: var(--sdi-control-h); }
+
+/* input + botón juntos */
+.input-group > .form-control,
+.input-group > .input-group-append > .btn,
+.input-group > .input-group-prepend > .btn,
+.input-group-text { height: var(--sdi-control-h); }
+
+
+/* ══════════════════════════════════
+   SELECTS (nativo y Select2)
+══════════════════════════════════ */
+select.form-control,
+.custom-select,
+.form-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  padding-right: 2.25rem;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%231a49a3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right .75rem center;
+  background-size: 12px 12px;
+  cursor: pointer;
+}
+
+/* Select2: caja */
+.select2-container { width: 100% !important; }
+.select2-container--default .select2-selection--single {
+  height: var(--sdi-control-h);
+  background: #fff;
+  display: flex;
+  align-items: center;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: var(--sdi-text);
+  line-height: 1.5;
+  padding-left: .75rem;
+  padding-right: 3rem;
+  font-size: .9rem;
+}
+.select2-container--default .select2-selection--single .select2-selection__placeholder { color: #a0a7b4; }
+
+/* Select2: flecha con el mismo chevron azul */
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  height: 100%;
+  top: 0;
+  right: .6rem;
+  width: 14px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%231a49a3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3E%3C/svg%3E") no-repeat center / 12px 12px;
+  transition: transform .2s;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow b { display: none; }
+.select2-container--open .select2-selection--single .select2-selection__arrow { transform: rotate(180deg); }
+
+/* Select2: botón limpiar (×) */
+.select2-container--default .select2-selection--single .select2-selection__clear {
+  height: auto;
+  margin-right: 1.9rem;
+  color: #a0a7b4;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+.select2-container--default .select2-selection--single .select2-selection__clear:hover { color: #dc3545; }
+
+/* Select2: múltiple */
+.select2-container--default .select2-selection--multiple { min-height: var(--sdi-control-h); padding: .2rem .4rem; }
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  background: var(--sdi-blue-soft);
+  border: 0;
+  border-radius: .35rem;
+  color: var(--sdi-blue);
+  font-size: .8rem;
+  font-weight: 600;
+}
+
+/* Select2: lista desplegable */
+.select2-dropdown {
+  border: 1px solid var(--sdi-blue-light);
+  border-radius: var(--sdi-radius);
+  box-shadow: 0 8px 20px rgba(16, 40, 90, .12);
+  overflow: hidden;
+  font-size: .9rem;
+}
+.select2-container--open .select2-dropdown--below { margin-top: 4px; }
+.select2-container--open .select2-dropdown--above { margin-top: -4px; }
+.select2-container--default .select2-search--dropdown .select2-search__field {
+  border: 1px solid var(--sdi-border);
+  border-radius: calc(var(--sdi-radius) - .1rem);
+  padding: .35rem .6rem;
+  outline: 0;
+}
+.select2-container--default .select2-search--dropdown .select2-search__field:focus { border-color: var(--sdi-blue-light); }
+.select2-results__option { padding: .45rem .75rem; color: var(--sdi-text); }
+.select2-container--default .select2-results__option--highlighted[aria-selected],
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  background: var(--sdi-blue-soft);
+  color: var(--sdi-blue);
+}
+.select2-container--default .select2-results__option[aria-selected="true"],
+.select2-container--default .select2-results__option--selected {
+  background: var(--sdi-blue);
+  color: #fff;
+}
+
+/* Select2 con error de validación del wizard */
+.is-invalid-field + .select2-container .select2-selection { border-color: #dc3545 !important; }
+
+
+/* ══════════════════════════════════
+   TABLAS · estilo moderno, sin hover
+══════════════════════════════════ */
+.table {
+  --sdi-table-line: #edf0f5;
+  --sdi-table-head: #f6f8fb;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  color: var(--sdi-text);
+  font-size: .9rem;
+}
+
+/* Encabezado: claro, en mayúsculas pequeñas (unifica table-light y table-dark) */
+.table thead th,
+.table thead.table-light th,
+.table thead.table-dark th {
+  background: var(--sdi-table-head);
+  color: #6b7585;
+  font-family: var(--sdi-font);
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: .75rem 1rem;
+  border: 0;
+  border-bottom: 1px solid var(--sdi-border);
+  vertical-align: middle;
+}
+.table thead th:first-child { border-top-left-radius: var(--sdi-radius); }
+.table thead th:last-child  { border-top-right-radius: var(--sdi-radius); }
+
+/* Celdas: más aire y solo líneas horizontales suaves */
+.table td,
+.table tbody th {
+  padding: .85rem 1rem;
+  border: 0;
+  border-top: 1px solid var(--sdi-table-line);
+  vertical-align: middle;
+}
+.table tbody tr:first-child > td,
+.table tbody tr:first-child > th { border-top: 0; }
+.table-sm td,
+.table-sm th,
+.table-sm thead th { padding: .5rem .75rem; }
+
+/* table-bordered: sin rejilla, mismo estilo limpio */
+.table-bordered,
+.table-bordered td,
+.table-bordered th { border-left: 0; border-right: 0; }
+.table-bordered { border: 0; }
+
+/* Sin hover en ninguna tabla (Bootstrap y DataTables) */
+.table tbody tr:hover,
+.table tbody tr:hover > * { color: inherit; }
+.table-hover tbody tr:hover { background-color: transparent; }
+table.dataTable > tbody > tr:hover > * { box-shadow: none !important; }
+
+/* Controles de DataTables a juego */
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+  border: 1px solid var(--sdi-border);
+  border-radius: var(--sdi-radius);
+  height: var(--sdi-control-h);
+  padding: .375rem .75rem;
+  font-size: .9rem;
+}
+.dataTables_wrapper .dataTables_info { color: #6b7585; font-size: .85rem; }
+.dataTables_wrapper .pagination .page-link {
+  border: 0;
+  border-radius: var(--sdi-radius) !important;
+  margin: 0 .15rem;
+  color: var(--sdi-text);
+}
+.dataTables_wrapper .pagination .page-item.active .page-link {
+  background: var(--sdi-blue);
+  color: #fff;
+}
+
+
+/* ══════════════════════════════════
+   ÍCONOS LINEALES (Bootstrap Icons)
+══════════════════════════════════ */
+
+/* Menú lateral: íconos blancos, mismo ancho para que el texto quede alineado */
+.sidebar .nav-link {
+  display: flex;
+  align-items: center;
+  border-radius: var(--sdi-radius);
+  transition: background-color .3s ease, color .3s ease;
+}
+.sidebar .nav-link:hover { background-color: rgba(255, 255, 255, .1); }
+.sidebar .menu-icono {
+  color: #fff;
+  font-size: 1.1rem;
+  width: 1.4rem;
+  margin-right: .65rem;
+  flex-shrink: 0;
+  text-align: center;
+  line-height: 1;
+}
+.sidebar .nav-link > span { display: inline-flex; align-items: center; }
+#submenuSoporte .menu-icono { font-size: .95rem; }
+.sidebar .menu-chevron { margin-left: auto; transition: transform .25s ease; }
+
+/* Íconos dentro de botones: tamaño y alineación uniformes */
+.btn .bi {
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: -.125em;
+}
+.btn.btn-icon .bi { font-size: .95rem; }
+
+/* ── Barra de filtros: label arriba, campos y botones en una fila ── */
+.barra-filtros {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: .75rem 1rem;
+  margin-bottom: 1.5rem;
+}
+.barra-filtros .form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 14rem;
+  min-width: 12rem;
+  margin-bottom: 0 !important;   /* anula el mb-3 de los parciales */
+}
+.barra-filtros .form-group > label {
+  margin-bottom: .3rem;
+}
+.barra-filtros .form-select,
+.barra-filtros .form-control {
+  display: block;
+  width: 100%;
+}
+.barra-filtros__acciones {
+  display: flex;
+  gap: .5rem;
+}
+@media (max-width: 575.98px) {
+  .barra-filtros .form-group,
+  .barra-filtros__acciones { flex: 1 1 100%; }
+  .barra-filtros__acciones .btn { flex: 1 1 0; }
+}
+
+/* ══════════════════════════════════
+   ESTADO VACÍO · lista sin registros
+══════════════════════════════════ */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1rem;
+}
+.empty-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 1rem;
+  border-radius: 50%;
+  background: #fff4e0;
+  color: #d98a00;
+  font-size: 2rem;
+  line-height: 1;
+}
+.empty-state-titulo {
+  margin-bottom: .35rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--sdi-text);
+}
+.empty-state-texto {
+  max-width: 28rem;
+  margin-bottom: 0;
+  color: #6b7585;
+}
+.empty-state .btn { margin-top: 1.25rem; }
+
+/* ══════════════════════════════════
+   CAMPOS LINEALES · sin la sombra interna del tema Lumen
+══════════════════════════════════ */
+.form-control,
+.form-select,
+.custom-select { box-shadow: none; }
+textarea.form-control {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+
+
+/* ══════════════════════════════════
+   DEMOSTRACIÓN PRÁCTICA (videos para vendedores)
+══════════════════════════════════ */
+.demo-practica {
+  margin-top: 1.25rem;
+  padding: 1.25rem;
+  border: 1px solid var(--sdi-border);
+  border-radius: var(--sdi-radius);
+  background: #fff;
+}
+.demo-practica__nota { margin-bottom: .75rem; font-size: .8rem; color: #6b7585; }
+.demo-practica__caso { margin-bottom: 1.25rem; }
+
+/* Cada paso numerado separado del siguiente */
+.demo-paso { margin-bottom: 1.5rem; }
+.demo-paso__titulo {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-bottom: .6rem;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--sdi-text);
+}
+.demo-paso__numero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  background: var(--sdi-blue-soft);
+  color: var(--sdi-blue);
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+.demo-practica__acciones,
+.demo-practica__botones { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* Panel de la acción elegida: vacío = indicación punteada; activo = detalle */
+.demo-practica__panel {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  margin-top: .75rem;
+  padding: 1rem;
+  border-radius: var(--sdi-radius);
+}
+.demo-practica__panel[data-estado="vacio"] {
+  border: 1px dashed #b9c5da;
+  background: #f8fafd;
+  color: #6b7585;
+}
+.demo-practica__panel[data-estado="activo"] {
+  border: 1px solid var(--sdi-border);
+  border-left: 3px solid var(--sdi-blue);
+  background: #fff;
+}
+.demo-practica__panel-icono { font-size: 1.25rem; line-height: 1.2; color: var(--sdi-blue); }
+.demo-practica__panel strong { color: var(--sdi-text); }
+.demo-practica__detalle { margin: .25rem 0 0; font-size: .875rem; }
+.demo-practica__beneficio {
+  margin-top: .75rem;
+  padding-top: .75rem;
+  border-top: 1px solid var(--sdi-table-line, #edf0f5);
+}
+
+.demo-practica__ayuda { margin: .5rem 0 0; font-size: .8rem; color: #6b7585; }
+.demo-practica__argumento {
+  margin-top: .75rem;
+  padding: .85rem 1rem;
+  border-radius: var(--sdi-radius);
+  background: var(--sdi-blue-soft);
+  color: var(--sdi-text);
+}
+.demo-practica__argumento strong { display: block; margin-bottom: .25rem; color: var(--sdi-blue-dark); }
+
+/* ==========================================================================
+   VIDEOS PARA VENDEDORES · TIPOGRAFÍA (Medichile y Veterchile)
+   Todo el texto (párrafos, menús, desplegables, botones) a .95rem;
+   títulos a 1rem en negrita y azul.
+   ========================================================================== */
+.seccion-videos,
+.seccion-videos p,
+.seccion-videos li,
+.seccion-videos label,
+.seccion-videos .small,
+.seccion-videos small,
+.seccion-videos .btn,
+.seccion-videos .nav-link,
+.seccion-videos .form-check-label,
+.seccion-videos .form-control,
+.seccion-videos .form-select,
+.seccion-videos .form-select option,
+.seccion-videos .videos-lista__item,
+.seccion-videos .video-card-descripcion,
+.seccion-videos .demo-practica__nota,
+.seccion-videos .demo-practica__detalle,
+.seccion-videos .demo-practica__ayuda {
+  font-size: .95rem;
+}
+/* El h1 de la página conserva su tamaño y color propios */
+.seccion-videos h2, .seccion-videos h3,
+.seccion-videos h4, .seccion-videos h5, .seccion-videos h6,
+.seccion-videos legend,
+.seccion-videos strong,
+.seccion-videos .demo-paso__titulo,
+.seccion-videos .videos-lista__grupo,
+.seccion-videos .videos-lista__selector-label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sdi-blue);
+}
+/* Título de cada video (ej. "Veterchile: el cuidado de la mascota, en un solo lugar") */
+.seccion-videos .video-card .video-card-titulo { font-size: 1.4rem; }
+@media (max-width: 767.98px) {
+  .seccion-videos .video-card .video-card-titulo { font-size: 1.1rem; }
+}
+/* Título "Soluciones" del menú de videos */
+.seccion-videos .videos-lista__grupo { font-size: 1rem; }
+
+/* ==========================================================================
+   VIDEOS PARA VENDEDORES · PESTAÑAS VENTAJAS / DEMOSTRACIÓN (pills horizontales)
+   ========================================================================== */
+.video-pestanas { margin-top: 1.25rem; }
+.video-pestanas__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--sdi-border);
+}
+.video-pestanas__nav .nav-link {
+  display: inline-flex;
+  align-items: center;
+  padding: .45rem 1.1rem;
+  border: 1px solid var(--sdi-border);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--sdi-text);
+  font-weight: 600;
+  line-height: 1.3;
+  cursor: pointer;
+}
+.video-pestanas__nav .nav-link:hover { color: var(--sdi-blue); border-color: var(--sdi-blue); }
+.video-pestanas__nav .nav-link:focus-visible { outline: 0; box-shadow: var(--sdi-focus); }
+.video-pestanas__nav .nav-link.active,
+.video-pestanas__nav .nav-link.active:hover {
+  background: var(--sdi-blue);
+  border-color: var(--sdi-blue);
+  color: #fff;
+}
+/* Mismo espacio entre las pills y el contenido de cada pestaña */
+.video-pestanas .tab-pane > .demo-practica { margin-top: 1rem; }
+/* Transición tenue al cambiar de pill */
+.video-pestanas .tab-pane.fade { transition: opacity .2s ease; }
+/* Sin contorno negro del navegador al hacer clic (el teclado conserva el foco azul) */
+.video-pestanas__nav .nav-link:focus,
+.video-pestanas .tab-pane:focus { outline: 0; }
+.video-pestanas .tab-pane:focus-visible { outline: 0; }
+
+/* ==========================================================================
+   VIDEOS PARA VENDEDORES · ACORDEÓN DE VENTAJAS (estilo SaaS)
+   ========================================================================== */
+.ventajas-acordeon { display: flex; flex-direction: column; gap: .5rem; }
+.ventajas-acordeon__item {
+  border: 1px solid var(--sdi-border);
+  border-radius: var(--sdi-radius);
+  background: #fff;
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+.ventajas-acordeon__item[open] {
+  border-color: var(--sdi-blue);
+  box-shadow: 0 4px 14px rgba(26, 73, 163, .08);
+}
+.ventajas-acordeon__titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .8rem 1rem;
+  list-style: none;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--sdi-text);
+}
+.ventajas-acordeon__titulo::-webkit-details-marker { display: none; }
+.ventajas-acordeon__titulo::marker { content: ""; }
+.ventajas-acordeon__titulo:focus { outline: 0; }
+.ventajas-acordeon__titulo:focus-visible { box-shadow: var(--sdi-focus); border-radius: var(--sdi-radius); }
+.ventajas-acordeon__item[open] .ventajas-acordeon__titulo { color: var(--sdi-blue); }
+.ventajas-acordeon__icono {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  background: var(--sdi-blue-soft);
+  color: var(--sdi-blue);
+  font-size: .8rem;
+  transition: transform .2s ease;
+}
+.ventajas-acordeon__item[open] .ventajas-acordeon__icono { transform: rotate(180deg); }
+.ventajas-acordeon__contenido {
+  padding: 0 1rem 1rem;
+  animation: ventajas-acordeon-abrir .2s ease;
+}
+.ventajas-acordeon__contenido > p { margin-bottom: .75rem; color: #5a6475; }
+.ventajas-acordeon__ventaja {
+  padding: .75rem .9rem;
+  border-left: 3px solid var(--sdi-blue);
+  border-radius: 0 var(--sdi-radius) var(--sdi-radius) 0;
+  background: var(--sdi-blue-soft);
+}
+.ventajas-acordeon__ventaja strong { display: block; margin-bottom: .25rem; }
+@keyframes ventajas-acordeon-abrir {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
 }

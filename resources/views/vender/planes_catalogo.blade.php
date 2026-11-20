@@ -10,14 +10,14 @@
     @isset($productoSeleccionado)
         <p class="mb-3">Software <strong>{{ $productoSeleccionado->nombre }}</strong></p>
     @endisset
-    <form method="get" action="{{ route('planes.catalogo') }}" class="d-flex flex-wrap align-items-center gap-2 mb-3">
+    <form method="get" action="{{ route('planes.catalogo') }}" class="barra-filtros">
         @isset($productoSeleccionado)
             <input type="hidden" name="software_id" value="{{ $productoSeleccionado->id }}">
         @endisset
         @include('partials.segmento_catalogo', ['esFiltro' => true])
-        <div class="form-group mb-3">
+        <div class="form-group">
             <label for="frecuencia">Ciclo de cobro</label>
-            <select class="form-control" id="frecuencia" name="frecuencia">
+            <select class="form-select" id="frecuencia" name="frecuencia" data-no-select2>
                 <option value="">Mensual y anual</option>
                 @foreach(\App\Plan::FRECUENCIAS as $ciclo)
                     <option value="{{ $ciclo }}" @selected(request()->query('frecuencia') === $ciclo)>{{ ucfirst($ciclo) }}</option>
@@ -25,8 +25,10 @@
             </select>
         </div>
         @include('planes.nivel', ['esFiltroNivel' => true])
-        <button type="submit" class="btn btn-catalogo-accion">Filtrar</button>
-        <a class="btn btn-outline-secondary" href="{{ route('planes.catalogo') }}">Limpiar filtros</a>
+        <div class="barra-filtros__acciones">
+            <button type="submit" class="btn btn-catalogo-accion">Filtrar</button>
+            <a class="btn btn-outline-secondary" href="{{ route('planes.catalogo') }}">Limpiar filtros</a>
+        </div>
     </form>
 
     <div class="row">

@@ -26,7 +26,7 @@
             <h1>Detalles del Reporte <i class="fa fa-file-alt"></i></h1>
 
             <a href="{{route("reportes.index")}}" class="btn btn-secondary mb-3">
-                <i class="fa fa-arrow-left"></i> Volver
+                <i class="bi bi-arrow-left"></i> Volver
             </a>
 
             <div class="card">
@@ -134,17 +134,17 @@
 
                 <div class="card-footer">
                     <a href="{{route("reportes.edit", $reporte)}}" class="btn btn-warning">
-                        <i class="fa fa-edit"></i> Editar
+                        <i class="bi bi-pencil"></i> Editar
                     </a>
                     <form action="{{route("reportes.destroy", $reporte)}}" method="post" style="display: inline;">
                         @csrf
                         @method('delete')
                         <button type="submit" class="btn btn-danger" onclick="return confirm('¿Está seguro de que desea eliminar este reporte?')">
-                            <i class="fa fa-trash"></i> Eliminar
+                            <i class="bi bi-trash"></i> Eliminar
                         </button>
                     </form>
                     <a href="{{route("reportes.index")}}" class="btn btn-secondary">
-                        <i class="fa fa-list"></i> Volver al Listado
+                        <i class="bi bi-list-ul"></i> Volver al Listado
                     </a>
                 </div>
             </div>
@@ -194,19 +194,19 @@
                 <div class="card-body">
                     <div class="d-flex flex-column gap-2">
                         <a href="{{route("reportes.edit", $reporte)}}" class="btn btn-warning">
-                            <i class="fa fa-edit"></i> Editar
+                            <i class="bi bi-pencil"></i> Editar
                         </a>
                         <a href="{{route("reportes.index")}}" class="btn btn-info">
-                            <i class="fa fa-list"></i> Listado Completo
+                            <i class="bi bi-list-ul"></i> Listado Completo
                         </a>
                         <a href="{{route("reportes.create")}}" class="btn btn-success">
-                            <i class="fa fa-plus"></i> Crear Nuevo
+                            <i class="bi bi-plus-lg"></i> Crear Nuevo
                         </a>
                         <form action="{{route("reportes.destroy", $reporte)}}" method="post">
                             @csrf
                             @method('delete')
                             <button type="submit" class="btn btn-danger w-100" onclick="return confirm('¿Está seguro?')">
-                                <i class="fa fa-trash"></i> Eliminar
+                                <i class="bi bi-trash"></i> Eliminar
                             </button>
                         </form>
                     </div>

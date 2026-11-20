@@ -49,7 +49,7 @@
                                        name="password" placeholder="••••••••"
                                        required autocomplete="current-password">
                                 <button class="btn btn-outline-secondary" type="button" id="togglePassword" tabindex="-1">
-                                    <i class="fa fa-eye" id="toggleIcon"></i>
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
                                 </button>
                                 @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -74,7 +74,7 @@
 
                         <div class="d-grid text-center">
                             <button type="submit" class="btn btn-info btn-lg">
-                                <i class="fa fa-sign-in-alt me-1"></i> Ingresar
+                                <i class="bi bi-box-arrow-in-right me-1"></i> Ingresar
                             </button>
                         </div>
                     </form>
@@ -90,10 +90,10 @@
             const icon = document.getElementById('toggleIcon');
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.classList.replace('fa-eye', 'fa-eye-slash');
+                icon.classList.replace('bi-eye', 'bi-eye-slash');
             } else {
                 input.type = 'password';
-                icon.classList.replace('fa-eye-slash', 'fa-eye');
+                icon.classList.replace('bi-eye-slash', 'bi-eye');
             }
         });
     </script>

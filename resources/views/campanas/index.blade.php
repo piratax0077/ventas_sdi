@@ -44,7 +44,7 @@
             <div class="col-lg-7">
                 <h2 class="h5">Destinatarios disponibles ({{ $destinatarios->total() }})</h2>
                 <div class="table-responsive">
-                    <table class="table table-hover">
+                    <table class="table">
                         <thead>
                         <tr>
                             <th><input type="checkbox" id="marcar-pagina" aria-label="Seleccionar todos los destinatarios de esta página"></th>

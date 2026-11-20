@@ -99,14 +99,14 @@
                             <i class="fa fa-edit"></i> Editar
                         </a>
                         <a href="{{ route('mantenimiento.index') }}" class="btn btn-secondary">
-                            <i class="fa fa-arrow-left"></i> Volver
+                            <i class="bi bi-arrow-left"></i> Volver
                         </a>
                         <form action="{{ route('mantenimiento.destroy', $mantenimiento->id) }}" method="POST" class="d-inline"
                               onsubmit="return confirm('¿Eliminar este mantenimiento de forma permanente?')">
                             @method('DELETE')
                             @csrf
                             <button type="submit" class="btn btn-danger">
-                                <i class="fa fa-trash"></i> Eliminar
+                                <i class="bi bi-trash"></i> Eliminar
                             </button>
                         </form>
                     </div>

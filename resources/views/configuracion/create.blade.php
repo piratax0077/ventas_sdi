@@ -26,7 +26,7 @@
             <h1>Agregar Nueva Configuración <i class="fa fa-plus-circle"></i></h1>
 
             <a href="{{route("configuracion.index")}}" class="btn btn-secondary mb-3">
-                <i class="fa fa-arrow-left"></i> Volver
+                <i class="bi bi-arrow-left"></i> Volver
             </a>
 
             @if ($errors->any())
@@ -150,10 +150,10 @@
 
                 <div class="card-footer">
                     <button type="submit" class="btn btn-success">
-                        <i class="fa fa-save"></i> Guardar Configuración
+                        <i class="bi bi-floppy"></i> Guardar Configuración
                     </button>
                     <a href="{{route("configuracion.index")}}" class="btn btn-secondary">
-                        <i class="fa fa-times"></i> Cancelar
+                        <i class="bi bi-x-lg"></i> Cancelar
                     </a>
                 </div>
             </form>

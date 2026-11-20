@@ -18,7 +18,7 @@
         <p class="text-muted">Elige un plan mensual o anual del catálogo.</p>
     @else
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table">
                 <thead>
                     <tr><th>Plan</th><th>Ciclo</th><th>Cantidad</th><th>Precio por ciclo</th><th>Subtotal</th><th></th></tr>
                 </thead>

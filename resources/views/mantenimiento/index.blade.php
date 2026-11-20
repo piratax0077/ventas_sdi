@@ -9,14 +9,6 @@
                 border: none;
             }
 
-            .table-hover tbody tr {
-                transition: background-color 0.3s ease;
-            }
-
-            .table-hover tbody tr:hover {
-                background-color: #f8f9fa;
-            }
-
             .btn-action {
                 transition: all 0.3s ease;
                 font-size: 0.875rem;
@@ -37,17 +29,6 @@
             .filter-card:hover {
                 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             }
-
-            .empty-state {
-                text-align: center;
-                padding: 3rem 1rem;
-            }
-
-            .empty-state-icon {
-                font-size: 3rem;
-                color: #dee2e6;
-                margin-bottom: 1rem;
-            }
         </style>
     @endpush
 
@@ -64,7 +45,7 @@
                     
                     <div class="mb-4 d-flex justify-content-between align-items-center d-inline">
                         <a href="{{ route('mantenimiento.create') }}" class="btn btn-info btn-lg">
-                            <i class="fa fa-plus me-2"></i> Nuevo Mantenimiento
+                            <i class="bi bi-plus-lg me-2"></i> Nuevo Mantenimiento
                         </a>
                     </div>
              
@@ -121,7 +102,7 @@
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0" id="tablaMantenciones">
+                            <table class="table mb-0" id="tablaMantenciones">
                                 <thead class="table-light">
                                     <tr>
                                         <th class="border-0">Descripción</th>
@@ -164,7 +145,7 @@
                                                         @method('DELETE')
                                                         @csrf
                                                         <button type="submit" class="btn btn-danger btn-icon btn-sm btn-action" onclick="confirmarEliminacionMantenimiento(event, '{{ $mantenimiento->descripcion }}')" title="Eliminar">
-                                                            <i class="fa fa-trash me-1"></i> Eliminar
+                                                            <i class="bi bi-trash me-1"></i> Eliminar
                                                         </button>
                                                     </form>
                                                 
@@ -181,13 +162,12 @@
                 <!-- Estado Vacío -->
                 <div class="card border-0 shadow-sm">
                     <div class="card-body">
-                        <div class="empty-state">
-                            <h5 class="text-muted mb-2"> No hay mantenimientos registrados</h5>
-                            <p class="text-muted mb-3"> Cuando registres nuevos mantenimientos, aparecerán aquí.</p>
-                            <a href="{{ route('mantenimiento.create') }}" class="btn btn-info btn">
-                                <i class="fa fa-plus me-2"></i> Crear Mantenimiento
-                            </a>
-                        </div>
+                        @include('partials.estado_vacio', [
+                            'titulo' => 'Aún no hay mantenimientos registrados',
+                            'mensaje' => 'Cuando registres un mantenimiento, aparecerá en este listado.',
+                            'accionUrl' => route('mantenimiento.create'),
+                            'accionTexto' => 'Crear mantenimiento',
+                        ])
                     </div>
                 </div>
             @endif

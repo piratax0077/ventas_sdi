@@ -26,7 +26,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1><i class="fa fa-plus-circle"></i> Crear Nuevo Reporte</h1>
                 <a href="{{route("reportes.index")}}" class="btn btn-secondary">
-                    <i class="fa fa-arrow-left"></i> Volver
+                    <i class="bi bi-arrow-left"></i> Volver
                 </a>
             </div>
 
@@ -165,10 +165,10 @@
                 <div class="card-footer bg-light">
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-success">
-                            <i class="fa fa-save"></i> Guardar Reporte
+                            <i class="bi bi-floppy"></i> Guardar Reporte
                         </button>
                         <a href="{{route("reportes.index")}}" class="btn btn-outline-secondary">
-                            <i class="fa fa-times"></i> Cancelar
+                            <i class="bi bi-x-lg"></i> Cancelar
                         </a>
                     </div>
                 </div>

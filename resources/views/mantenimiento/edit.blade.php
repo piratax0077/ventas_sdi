@@ -101,7 +101,7 @@
 
                         <div class="d-flex gap-2">
                             <button type="submit" class="btn btn-warning">
-                                <i class="fa fa-save"></i> Actualizar
+                                <i class="bi bi-floppy"></i> Actualizar
                             </button>
                             <a href="{{ route('mantenimiento.show', $mantenimiento->id) }}" class="btn btn-secondary">
                                 <i class="fa fa-times"></i> Cancelar

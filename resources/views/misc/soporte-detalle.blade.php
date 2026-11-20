@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 <a href="{{ route('soporte.index') }}" class="btn btn-info btn-lg">
-                    <i class="fa fa-plus me-2"></i> Nueva Solicitud
+                    <i class="bi bi-plus-lg me-2"></i> Nueva Solicitud
                 </a>
             </div>
         </div>
@@ -257,7 +257,7 @@
                             </div>
                             <div class="d-flex justify-content-end">
                                 <button type="submit" class="btn btn-warning">
-                                    <i class="fa fa-paper-plane me-2"></i>Enviar Respuesta
+                                    <i class="bi bi-send me-2"></i>Enviar Respuesta
                                 </button>
                             </div>
                         </form>
@@ -341,7 +341,7 @@
                                 </select>
                             </div>
                             <button type="submit" class="btn btn-outline-warning w-100">
-                                <i class="fa fa-save me-2"></i>Actualizar Estado
+                                <i class="bi bi-floppy me-2"></i>Actualizar Estado
                             </button>
                         </form>
                     </div>
@@ -357,11 +357,11 @@
                     </div>
                     <div class="card-body d-grid gap-2">
                         <a href="{{ route('soporte.mis-solicitudes') }}" class="btn btn-outline-secondary">
-                            <i class="fa fa-list me-2"></i>Ver Todas Mis Solicitudes
+                            <i class="bi bi-list-ul me-2"></i>Ver Todas Mis Solicitudes
                         </a>
                         @if($solicitud->estaAbierta())
                         <a href="{{ route('soporte.index') }}" class="btn btn-outline-primary">
-                            <i class="fa fa-plus me-2"></i>Nueva Solicitud
+                            <i class="bi bi-plus-lg me-2"></i>Nueva Solicitud
                         </a>
                         @endif
                     </div>

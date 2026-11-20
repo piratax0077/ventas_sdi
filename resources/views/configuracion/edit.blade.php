@@ -26,7 +26,7 @@
             <h1>Editar Configuración <i class="fa fa-edit"></i></h1>
 
             <a href="{{route("configuracion.index")}}" class="btn btn-secondary mb-3">
-                <i class="fa fa-arrow-left"></i> Volver
+                <i class="bi bi-arrow-left"></i> Volver
             </a>
 
             @if ($errors->any())
@@ -171,10 +171,10 @@
 
                 <div class="card-footer">
                     <button type="submit" class="btn btn-success">
-                        <i class="fa fa-save"></i> Actualizar Configuración
+                        <i class="bi bi-floppy"></i> Actualizar Configuración
                     </button>
                     <a href="{{route("configuracion.index")}}" class="btn btn-secondary">
-                        <i class="fa fa-times"></i> Cancelar
+                        <i class="bi bi-x-lg"></i> Cancelar
                     </a>
                 </div>
             </form>
@@ -210,13 +210,13 @@
 
                     <h6>Acciones</h6>
                     <a href="{{route("configuracion.show", $configuracion)}}" class="btn btn-sm btn-info w-100 mb-2">
-                        <i class="fa fa-eye"></i> Ver Detalles
+                        <i class="bi bi-eye"></i> Ver Detalles
                     </a>
                     <form action="{{route("configuracion.destroy", $configuracion)}}" method="post">
                         @csrf
                         @method('delete')
                         <button type="submit" class="btn btn-sm btn-danger w-100" onclick="return confirm('¿Está seguro de que desea eliminar esta configuración?')">
-                            <i class="fa fa-trash"></i> Eliminar
+                            <i class="bi bi-trash"></i> Eliminar
                         </button>
                     </form>
                 </div>

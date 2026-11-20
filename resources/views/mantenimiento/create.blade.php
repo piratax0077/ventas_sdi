@@ -98,10 +98,10 @@
 
                         <div class="d-flex gap-2 text-cente float-right">
                             <button type="submit" class="btn btn-info mx-1">
-                                <i class="fa fa-save"></i> Guardar
+                                <i class="bi bi-floppy"></i> Guardar
                             </button>
                             <a href="{{ route('mantenimiento.index') }}" class="btn btn-danger mx-1">
-                                <i class="fa fa-times"></i> Cancelar
+                                <i class="bi bi-x-lg"></i> Cancelar
                             </a>
                         </div>
                     </form>

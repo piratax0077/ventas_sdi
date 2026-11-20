@@ -88,10 +88,10 @@
                 </div>
                 <div class="card-footer bg-light">
                     <a href="{{route("planes.edit", $plan)}}" class="btn btn-warning">
-                        <i class="fa fa-edit"></i> Editar
+                        <i class="bi bi-pencil"></i> Editar
                     </a>
                     <a href="{{route("planes.index")}}" class="btn btn-secondary">
-                        <i class="fa fa-arrow-left"></i> Volver
+                        <i class="bi bi-arrow-left"></i> Volver
                     </a>
                 </div>
             </div>

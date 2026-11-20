@@ -10,6 +10,8 @@
     <title>@yield("titulo") - {{env("APP_NAME")}}</title>
     <link href="{{url("/css/bootstrap.min.css")}}" rel="stylesheet">
     <link href="{{url("/css/all.min.css")}}" rel="stylesheet">
+    <!-- Íconos lineales -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- jQuery para AJAX -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <!-- select2 js -->
@@ -23,9 +25,8 @@
     <link href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=IBM+Plex+Sans:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <!-- Fuente: DM Sans local (public/fonts/dm-sans), precargada para evitar el cambio de letra al cargar -->
+    <link rel="preload" href="{{ asset('fonts/dm-sans/dm-sans-latin.woff2') }}" as="font" type="font/woff2" crossorigin>
 
     <!-- ESTILO -->
     <link href="{{ asset('css/main.css') }}" rel="stylesheet">
@@ -39,10 +40,10 @@
         }
 
         /* Chevron animado en menú desplegable del sidebar */
-        .nav-link[data-bs-toggle="collapse"] .fa-chevron-down {
+        .nav-link[data-bs-toggle="collapse"] .menu-chevron {
             transition: transform 0.25s ease;
         }
-        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"] .fa-chevron-down {
+        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"] .menu-chevron {
             transform: rotate(180deg);
         }
         /* Submenú sidebar */
@@ -69,89 +70,89 @@
                     @guest
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('login') }}">
-                                Login
+                                <i class="bi bi-box-arrow-in-right menu-icono" aria-hidden="true"></i> Login
                             </a>
                         </li>
 
                         @if(Route::has('register'))
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('register') }}">
-                                Registro
+                                <i class="bi bi-person-plus menu-icono" aria-hidden="true"></i> Registro
                             </a>
                         </li>
                         @endif
                     @else
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("home")}}">
-                                Inicio
+                                <i class="bi bi-house menu-icono" aria-hidden="true"></i> Inicio
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("clientes.index")}}">
-                                Clientes
+                                <i class="bi bi-people menu-icono" aria-hidden="true"></i> Clientes
                             </a>
                         </li>
 
                         @can('administrar-catalogo')
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("productos-software.index")}}">
-                                Software
+                                <i class="bi bi-laptop menu-icono" aria-hidden="true"></i> Software
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("planes.index")}}">
-                                Planes
+                                <i class="bi bi-layers menu-icono" aria-hidden="true"></i> Planes
                             </a>
                         </li>
                         @endcan
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("vender.index")}}">
-                                Registrar suscripción
+                                <i class="bi bi-clipboard-plus menu-icono" aria-hidden="true"></i> Registrar suscripción
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('vender.videos') }}">
-                                Videos para vendedores
+                                <i class="bi bi-play-circle menu-icono" aria-hidden="true"></i> Videos para vendedores
                             </a>
                         </li>
                           <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("ventas.index")}}">
-                                Ventas
+                                <i class="bi bi-graph-up-arrow menu-icono" aria-hidden="true"></i> Ventas
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("productos.catalogo")}}">
-                                Catálogo de software
+                                <i class="bi bi-grid menu-icono" aria-hidden="true"></i> Catálogo de software
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("planes.catalogo")}}">
-                                Planes de suscripción
+                                <i class="bi bi-card-checklist menu-icono" aria-hidden="true"></i> Planes de suscripción
                             </a>
                         </li>
                         
                         @can('administrar-catalogo')
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("mantenimiento.index")}}">
-                                Mantenimiento
+                                <i class="bi bi-tools menu-icono" aria-hidden="true"></i> Mantenimiento
                             </a>
                         </li>
                         @endcan
                         @can('administrar-usuarios')
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{ route('administracion.videos.index') }}">
-                                Administración · Videos
+                                <i class="bi bi-camera-video menu-icono" aria-hidden="true"></i> Administración · Videos
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("usuarios.index")}}">
-                                Usuarios
+                                <i class="bi bi-person-gear menu-icono" aria-hidden="true"></i> Usuarios
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("configuracion.index")}}">
-                                Configuración
+                                <i class="bi bi-gear menu-icono" aria-hidden="true"></i> Configuración
                             </a>
                         </li>
                         @endcan
@@ -167,21 +168,21 @@
                            role="button"
                            aria-expanded="{{ request()->routeIs('soporte.*') ? 'true' : 'false' }}"
                            aria-controls="submenuSoporte">
-                            <span><i class="fa fa-headset me-2"></i> Soporte</span>
-                            <i class="fa fa-chevron-down small"></i>
+                            <span><i class="bi bi-headset menu-icono" aria-hidden="true"></i> Soporte</span>
+                            <i class="bi bi-chevron-down small menu-chevron" aria-hidden="true"></i>
                         </a>
                         <div class="collapse {{ request()->routeIs('soporte.*') ? 'show' : '' }}" id="submenuSoporte">
                             <ul class="nav flex-column ps-3 mt-1">
                                 <li class="nav-item">
                                     <a class="nav-link text-white-50 py-1 {{ request()->routeIs('soporte.index') ? 'text-white fw-semibold' : '' }}"
                                        href="{{ route('soporte.index') }}">
-                                        <i class="fa fa-plus-circle me-2 small"></i> Nueva Solicitud
+                                        <i class="bi bi-plus-circle menu-icono" aria-hidden="true"></i> Nueva Solicitud
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link text-white-50 py-1 {{ request()->routeIs('soporte.mis-solicitudes') ? 'text-white fw-semibold' : '' }}"
                                        href="{{ route('soporte.mis-solicitudes') }}">
-                                        <i class="fa fa-list me-2 small"></i> Mis Solicitudes
+                                        <i class="bi bi-list-ul menu-icono" aria-hidden="true"></i> Mis Solicitudes
                                     </a>
                                 </li>
                             </ul>
@@ -196,13 +197,13 @@
 
                         <li class="nav-item border-top border-secondary mt-3 pt-3">
                             <a class="nav-link text-white" href="{{route("perfil")}}">
-                                <i class="fa fa-user-circle me-2"></i> Mi Perfil
+                                <i class="bi bi-person-circle menu-icono" aria-hidden="true"></i> Mi Perfil
                             </a>
                         </li>
 
                         <li class="nav-item">
                             <a class="nav-link text-white" href="{{route("logout")}}">
-                                <i class="fa fa-sign-out-alt me-2"></i> Salir ({{ Auth::user()->name }})
+                                <i class="bi bi-box-arrow-right menu-icono" aria-hidden="true"></i> Salir ({{ Auth::user()->name }})
                             </a>
                         </li>
                     @endguest
@@ -215,7 +216,8 @@
 
         <!-- Contenido -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 pt-4">
-            <div class="container">
+            {{-- Una vista puede ocupar todo el ancho con @section('clase_contenedor', 'container-fluid') --}}
+            <div class="@yield('clase_contenedor', 'container')">
  @yield("contenido")
             </div>
 

@@ -16,7 +16,7 @@
                     
                     <div class="mb-4 d-flex justify-content-between align-items-center d-inline">
                         <a href="{{route("planes.create")}}" class="btn btn-catalogo-accion btn-lg">
-                            <i class="fa fa-plus-circle me-2" aria-hidden="true"></i> Agregar plan
+                            <i class="bi bi-plus-circle me-2" aria-hidden="true"></i> Agregar plan
                         </a>
                     </div>
              
@@ -39,7 +39,7 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="tablaPlanes" class="table table-hover mb-0">
+                        <table id="tablaPlanes" class="table mb-0">
                             <thead class="table-light">
                             <tr>
                                 <th>Nombre</th>
@@ -87,7 +87,7 @@
                                         @if(is_array($plan->features) && count($plan->features) > 0)
                                             <button type="button" class="btn btn-blue plan-accion" data-bs-toggle="popover"
                                                 data-bs-title="Features" data-bs-content="{{implode(', ', $plan->features)}}" title="Ver características">
-                                                <i class="fa fa-star" aria-hidden="true"></i> {{count($plan->features)}}
+                                                <i class="bi bi-star" aria-hidden="true"></i> {{count($plan->features)}}
                                             </button>
                                         @else
                                             <span>-</span>
@@ -103,13 +103,13 @@
                                     <td>
                                         <div class="plan-acciones">
                                             <a class="btn btn-warning plan-accion" href="{{route("planes.edit", [$plan])}}" title="Editar plan" aria-label="Editar plan">
-                                                <i class="fa fa-edit"></i>
+                                                <i class="bi bi-pencil"></i>
                                             </a>
                                             <form action="{{route("planes.destroy", [$plan])}}" method="post" style="display:inline">
                                                 @method("delete")
                                                 @csrf
                                                 <button type="submit" class="btn btn-danger plan-accion" title="Eliminar plan" aria-label="Eliminar plan" onclick="return confirm('¿Está seguro que desea eliminar este plan?')">
-                                                    <i class="fa fa-trash"></i>
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
                                         </div>
@@ -117,15 +117,13 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center py-5">
-                                        <div style="color: #ccc; margin-bottom: 1rem; font-size: 3rem;">
-                                            <i class="fa fa-inbox"></i>
-                                        </div>
-                                        <h5 class="text-muted mb-2">Sin planes registrados</h5>
-                                        <p class="text-muted mb-3">No hay planes disponibles en este momento.</p>
-                                        <a href="{{route("planes.create")}}" class="btn btn-primary">
-                                            <i class="fa fa-plus-circle me-2"></i>Crear Plan Ahora
-                                        </a>
+                                    <td colspan="9" class="p-0">
+                                        @include('partials.estado_vacio', [
+                                            'titulo' => 'Aún no hay planes registrados',
+                                            'mensaje' => 'Cuando crees un plan, aparecerá en este listado.',
+                                            'accionUrl' => route('planes.create'),
+                                            'accionTexto' => 'Crear plan',
+                                        ])
                                     </td>
                                 </tr>
                             @endforelse

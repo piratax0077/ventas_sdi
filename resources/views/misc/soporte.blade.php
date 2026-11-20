@@ -115,10 +115,10 @@
                                 {{-- Botones --}}
                                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                     <a href="{{ route('home') }}" class="btn mr-2 btn-danger btn-lg">
-                                        <i class="fa fa-times me-2"></i> Cancelar
+                                        <i class="bi bi-x-lg me-2"></i> Cancelar
                                     </a>
                                     <button type="submit" class="btn btn-info btn-lg">
-                                        <i class="fa fa-paper-plane me-2"></i> Enviar Solicitud
+                                        <i class="bi bi-send me-2"></i> Enviar Solicitud
                                     </button>
                                 </div>
                             </form>
@@ -172,7 +172,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed p-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                            <i class="fa fa-chevron-right me-2 text-primary"></i>¿Cuánto tarda la respuesta?
+                                            <i class="bi bi-chevron-right me-2 text-primary"></i>¿Cuánto tarda la respuesta?
                                         </button>
                                     </h2>
                                     <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
@@ -184,7 +184,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed p-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                            <i class="fa fa-chevron-right me-2 text-primary"></i>¿Puedo adjuntar archivos?
+                                            <i class="bi bi-chevron-right me-2 text-primary"></i>¿Puedo adjuntar archivos?
                                         </button>
                                     </h2>
                                     <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
@@ -196,7 +196,7 @@
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed p-0" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                            <i class="fa fa-chevron-right me-2 text-primary"></i>¿Cómo hago seguimiento?
+                                            <i class="bi bi-chevron-right me-2 text-primary"></i>¿Cómo hago seguimiento?
                                         </button>
                                     </h2>
                                     <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">

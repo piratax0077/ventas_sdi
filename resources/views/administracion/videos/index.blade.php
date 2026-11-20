@@ -5,7 +5,7 @@
     @include('notificacion')
     @include('partials.pestanas_capacitacion', ['rutaPestanas' => 'administracion.videos.index'])
     <div class="table-responsive">
-        <table class="table table-hover">
+        <table class="table">
             <thead><tr><th>Video</th><th>Acciones</th></tr></thead>
             <tbody>
                 @forelse($videos as $video)

@@ -95,10 +95,10 @@
                 <!-- Botones de Acción -->
                 <div class="mt-4 mb-4">
                     <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fa fa-save"></i> Guardar Producto
+                        <i class="bi bi-floppy"></i> Guardar Producto
                     </button>
                     <a href="{{route("productos-software.index")}}" class="btn btn-secondary btn-lg">
-                        <i class="fa fa-times"></i> Cancelar
+                        <i class="bi bi-x-lg"></i> Cancelar
                     </a>
                 </div>
             </form>

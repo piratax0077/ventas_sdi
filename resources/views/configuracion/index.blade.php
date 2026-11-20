@@ -25,7 +25,7 @@
         <div class="col-12">
             <h1>Configuraciones del Sistema <i class="fa fa-cog"></i></h1>
             <a href="{{route("configuracion.create")}}" class="btn btn-success mb-2">
-                <i class="fa fa-plus"></i> Agregar Configuración
+                <i class="bi bi-plus-lg"></i> Agregar Configuración
             </a>
             @include("notificacion")
 
@@ -34,7 +34,7 @@
                 <div class="card-body">
                     <div class="btn-group" role="group">
                         <a href="{{route("configuracion.index")}}" class="btn btn-outline-secondary">
-                            <i class="fa fa-list"></i> Todas
+                            <i class="bi bi-list-ul"></i> Todas
                         </a>
                         @foreach($categorias as $cat)
                             <a href="?categoria={{$cat}}" class="btn btn-outline-primary">
@@ -47,7 +47,7 @@
 
             <!-- Tabla de Configuraciones -->
             <div class="table-responsive">
-                <table class="table table-bordered table-hover">
+                <table class="table table-bordered">
                     <thead class="table-dark">
                     <tr>
                         <th>Clave</th>
@@ -113,12 +113,12 @@
                             </td>
                             <td>
                                 <a class="btn btn-info btn-sm" href="{{route("configuracion.show", $config)}}">
-                                    <i class="fa fa-eye"></i>
+                                    <i class="bi bi-eye"></i>
                                 </a>
                             </td>
                             <td>
                                 <a class="btn btn-warning btn-sm" href="{{route("configuracion.edit", $config)}}">
-                                    <i class="fa fa-edit"></i>
+                                    <i class="bi bi-pencil"></i>
                                 </a>
                             </td>
                             <td>
@@ -126,15 +126,20 @@
                                     @method("delete")
                                     @csrf
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Está seguro?')">
-                                        <i class="fa fa-trash"></i>
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </form>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="text-center text-muted py-4">
-                                No hay configuraciones registradas. <a href="{{route("configuracion.create")}}">Crear una ahora</a>
+                            <td colspan="9" class="p-0">
+                                @include('partials.estado_vacio', [
+                                    'titulo' => 'Aún no hay configuraciones registradas',
+                                    'mensaje' => 'Cuando crees una configuración, aparecerá en este listado.',
+                                    'accionUrl' => route('configuracion.create'),
+                                    'accionTexto' => 'Crear configuración',
+                                ])
                             </td>
                         </tr>
                     @endforelse

@@ -10,7 +10,7 @@
         <a class="btn btn-catalogo-accion mb-3" href="{{ $correoGrupal }}">Abrir correo grupal con copia oculta</a>
     @endif
     <div class="table-responsive">
-        <table class="table table-hover">
+        <table class="table">
             <thead><tr><th>Cliente</th><th>Contacto</th><th>Mensaje</th></tr></thead>
             <tbody>
             @foreach($destinatarios as $fila)
